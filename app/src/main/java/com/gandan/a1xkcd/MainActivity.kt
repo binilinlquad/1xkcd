@@ -99,15 +99,14 @@ class MainActivity : AppCompatActivity() {
     private fun showComicStrip() {
         val hideAltTextAnimation = comic_alt.animate()
                 .alpha(0.1f)
-                .setDuration(450)
-                .setInterpolator(LinearInterpolator())
+            .setDuration(100)
                 .withEndAction {
                     comic_alt.visibility = View.INVISIBLE
                 }
 
         val comicStripRevealAnimation = comic_strip.animate()
                 .alpha(1f)
-                .setDuration(500)
+            .setDuration(350)
 
         hideAltTextAnimation.start()
         comicStripRevealAnimation.start()
