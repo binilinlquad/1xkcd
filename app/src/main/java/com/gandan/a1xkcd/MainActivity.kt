@@ -36,15 +36,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Strip>, response: Response<Strip>) {
-                runOnUiThread {
-                    if (response.isSuccessful.not()) {
-                        throw IllegalStateException("Request failed with response ${response.code()}")
-                    }
-
-                    val strip = response.body()!!
-
-                    updateMainViewModel(viewModel, strip)
+                if (response.isSuccessful.not()) {
+                    throw IllegalStateException("Request failed with response ${response.code()}")
                 }
+
+                val strip = response.body()!!
+
+                updateMainViewModel(viewModel, strip)
             }
 
         })
@@ -116,16 +114,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateMainViewModel(viewModel: MainViewModel, strip: Strip) {
-        viewModel.alt.value = strip.alt
-        viewModel.img.value = Uri.parse(strip.img)
-        viewModel.day.value = strip.day
-        viewModel.link.value = strip.link
-        viewModel.news.value = strip.news
-        viewModel.num.value = strip.num
-        viewModel.safeTitle.value = strip.safeTitle
-        viewModel.title.value = strip.title
-        viewModel.transcript.value = strip.transcript
-        viewModel.year.value = strip.year
+        viewModel.alt.postValue(strip.alt)
+        viewModel.img.postValue(Uri.parse(strip.img))
+        viewModel.day.postValue(strip.day)
+        viewModel.link.postValue(strip.link)
+        viewModel.news.postValue(strip.news)
+        viewModel.num.postValue(strip.num)
+        viewModel.safeTitle.postValue(strip.safeTitle)
+        viewModel.title.postValue(strip.title)
+        viewModel.transcript.postValue(strip.transcript)
+        viewModel.year.postValue(strip.year)
     }
 
 }
