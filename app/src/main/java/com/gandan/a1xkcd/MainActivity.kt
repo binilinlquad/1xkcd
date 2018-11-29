@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Strip>, t: Throwable) {
                 runOnUiThread {
                     Toast.makeText(this@MainActivity, "Failed because $t", Toast.LENGTH_LONG).show()
-                    comic_title.text = "Cannot get latest strip :("
+                    comic_title.setText(R.string.cannot_load_strip)
+                    comic_title.contentDescription = getString(R.string.cannot_load_strip)
                 }
             }
 
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.title.observe(this, Observer { title ->
             comic_title.text = title
+            comic_title.contentDescription = "Title is $title"
         })
 
         viewModel.img.observe(this, Observer { uri ->
@@ -57,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.alt.observe(this, Observer { alt ->
             comic_alt.text = alt
+            // i think put alternative text as comic strip content description is more appropriate
+            // rather than put it in comic_alt content description
+            comic_strip.contentDescription = alt
         })
 
         comic_strip.setOnClickListener { v ->
