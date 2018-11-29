@@ -1,7 +1,8 @@
 package com.gandan.a1xkcd
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
+
 
 class MainScreen(private val viewModel: MainViewModel) {
 

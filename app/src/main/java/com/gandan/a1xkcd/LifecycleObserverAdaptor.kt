@@ -1,9 +1,9 @@
 package com.gandan.a1xkcd
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 
 class LifecycleObserverAdaptor(private val lifecycle: Lifecycle) : LifecycleObserver {
     val state: MutableLiveData<Lifecycle.State> = MutableLiveData()

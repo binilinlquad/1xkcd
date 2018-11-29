@@ -1,8 +1,8 @@
 package com.gandan.a1xkcd
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.net.Uri
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
 

@@ -1,13 +1,13 @@
 package com.gandan.a1xkcd
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.gandan.a1xkcd.service.Strip
 import com.gandan.a1xkcd.service.createXkcdClient
 import com.squareup.picasso.Picasso
