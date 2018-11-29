@@ -22,9 +22,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Getting latest strip!"
+            android:textStyle="bold"
+            android:textSize="18dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/comic_strip"
+            app:layout_constraintTop_toTopOf="@id/comic_strip"
             app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
