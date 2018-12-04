@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">1xkcd</string>
     <string name="cannot_load_strip">Cannot get latest strip :(</string>
+    <string name="latest_strip_title_placeholder">Getting latest strip!</string>
 </resources>

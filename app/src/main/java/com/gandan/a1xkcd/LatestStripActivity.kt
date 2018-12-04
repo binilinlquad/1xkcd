@@ -11,16 +11,16 @@ import androidx.lifecycle.ViewModelProviders
 import com.gandan.a1xkcd.service.Strip
 import com.gandan.a1xkcd.service.createXkcdClient
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_latest_strip.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity() {
+class LatestStripActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_latest_strip)
         val viewModel: MainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         // basic http client
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         xkcdClient.latestStrip().enqueue(object : Callback<Strip> {
             override fun onFailure(call: Call<Strip>, t: Throwable) {
                 runOnUiThread {
-                    Toast.makeText(this@MainActivity, "Failed because $t", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LatestStripActivity, "Failed because $t", Toast.LENGTH_LONG).show()
                     comic_title.setText(R.string.cannot_load_strip)
                     comic_title.contentDescription = getString(R.string.cannot_load_strip)
                 }
