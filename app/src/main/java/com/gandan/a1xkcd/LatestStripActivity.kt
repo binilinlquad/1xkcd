@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -12,9 +11,16 @@ import com.gandan.a1xkcd.service.Strip
 import com.gandan.a1xkcd.service.createXkcdClient
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_latest_strip.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class LatestStripActivity : AppCompatActivity() {
 
@@ -22,31 +28,6 @@ class LatestStripActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_latest_strip)
         val viewModel: MainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        // basic http client
-        val xkcdClient = createXkcdClient("https://xkcd.com/")
-
-        // get latest strip
-        xkcdClient.latestStrip().enqueue(object : Callback<Strip> {
-            override fun onFailure(call: Call<Strip>, t: Throwable) {
-                runOnUiThread {
-                    Toast.makeText(this@LatestStripActivity, "Failed because $t", Toast.LENGTH_LONG).show()
-                    comic_title.setText(R.string.cannot_load_strip)
-                    comic_title.contentDescription = getString(R.string.cannot_load_strip)
-                }
-            }
-
-            override fun onResponse(call: Call<Strip>, response: Response<Strip>) {
-                if (response.isSuccessful.not()) {
-                    throw IllegalStateException("Request failed with response ${response.code()}")
-                }
-
-                val strip = response.body()!!
-
-                updateMainViewModel(viewModel, strip)
-            }
-
-        })
 
         viewModel.title.observe(this, Observer { title ->
             comic_title.text = title
@@ -71,6 +52,36 @@ class LatestStripActivity : AppCompatActivity() {
                 toggleComitStripAndAltText()
             }
         }
+
+        // basic http client
+        val xkcdClient = createXkcdClient("https://xkcd.com/")
+
+        // get latest strip
+        val uiScope = CoroutineScope(Dispatchers.Main)
+        uiScope.launch {
+            val strip = xkcdClient.latestStrip().await()
+            updateMainViewModel(viewModel, strip)
+        }
+    }
+
+    private suspend fun Call<Strip>.await(): Strip {
+        return suspendCoroutine { continuation ->
+            enqueue(object : Callback<Strip> {
+                override fun onFailure(call: Call<Strip>, t: Throwable) {
+                    continuation.resumeWithException(t)
+                }
+
+                override fun onResponse(call: Call<Strip>, response: Response<Strip>) {
+                    if (response.isSuccessful) {
+                        continuation.resume(response.body()!!)
+                    } else {
+                        continuation.resumeWithException(HttpException(response))
+                    }
+                }
+
+            })
+        }
+
     }
 
     private fun toggleComitStripAndAltText() {
