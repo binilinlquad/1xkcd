@@ -59,8 +59,12 @@ class LatestStripActivity : AppCompatActivity() {
         // get latest strip
         val uiScope = CoroutineScope(Dispatchers.Main)
         uiScope.launch {
-            val strip = xkcdClient.latestStrip().await()
-            updateMainViewModel(viewModel, strip)
+            try {
+                val strip = xkcdClient.latestStrip().await()
+                updateMainViewModel(viewModel, strip)
+            } catch (e: Throwable) {
+                comic_title.setText(R.string.cannot_load_strip)
+            }
         }
     }
 
