@@ -9,11 +9,11 @@ import retrofit2.http.GET
 interface XkcdService {
 
     @GET("info.0.json")
-    fun latestStrip(): Call<Strip>
+    fun latestStrip(): Call<Page>
 
 }
 
-data class Strip(
+data class Page(
         @SerializedName("month")
         val month: String,
         @SerializedName("num")
