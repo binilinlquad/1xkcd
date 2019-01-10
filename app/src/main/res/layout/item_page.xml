@@ -36,6 +36,6 @@
             app:layout_constraintTop_toTopOf="@id/comic_strip"
             android:visibility="invisible"
             android:alpha="0"
-    />
+            android:padding="@dimen/comic_alt_padding"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
