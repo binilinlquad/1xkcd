@@ -8,25 +8,25 @@ import androidx.paging.ItemKeyedDataSource
 import await
 import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.service.Page
-import com.gandan.a1xkcd.service.XkcdApi
+import com.gandan.a1xkcd.service.XkcdService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class PageDataSourceFactory(
-        private val api: XkcdApi,
+        private val service: XkcdService,
         private val uiScope: CoroutineScope,
         private val activity: ComicActivity
 ) : DataSource.Factory<Int, Page>() {
     private val sourceLiveData = MutableLiveData<PageDataSource>()
     override fun create(): DataSource<Int, Page> {
-        val source = PageDataSource(api, uiScope, activity)
+        val source = PageDataSource(service, uiScope, activity)
         sourceLiveData.postValue(source)
         return source
     }
 
 }
 
-class PageDataSource(private val api: XkcdApi,
+class PageDataSource(private val service: XkcdService,
                      private val uiScope: CoroutineScope,
                      private val activity: ComicActivity) : ItemKeyedDataSource<Int, Page>() {
 
@@ -37,7 +37,7 @@ class PageDataSource(private val api: XkcdApi,
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Page>) {
         uiScope.launch {
             try {
-                val latestPage = api.latestStrip().await()
+                val latestPage = service.latestStrip().await()
                 val totalPages = latestPage.num
                 callback.onResult(listOf(latestPage), 0, totalPages)
 
@@ -53,7 +53,7 @@ class PageDataSource(private val api: XkcdApi,
         uiScope.launch {
             val num = params.key - 1
             try {
-                val page = api.at(num).await()
+                val page = service.at(num).await()
                 callback.onResult(listOf(page))
 
                 Log.i(TAG, "load page $num successfully")

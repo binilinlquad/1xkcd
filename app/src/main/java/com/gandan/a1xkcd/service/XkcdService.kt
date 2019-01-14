@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface XkcdApi {
+interface XkcdService {
 
     @GET("info.0.json")
     fun latestStrip(): Call<Page>
@@ -42,10 +42,10 @@ data class Page(
         val day: String
 )
 
-fun createXkcdApi(baseUrl: String): XkcdApi {
+fun createXkcdService(baseUrl: String): XkcdService {
     return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(XkcdApi::class.java)
+            .create(XkcdService::class.java)
 }
