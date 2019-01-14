@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gandan.a1xkcd.R
 import com.gandan.a1xkcd.service.Page
 import com.squareup.picasso.Picasso
+import kotlin.LazyThreadSafetyMode.*
 
 class ComicPageAdapter : PagedListAdapter<Page, StripViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StripViewHolder {
@@ -49,6 +50,8 @@ class StripViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     private val comicStrip: ImageView = root.findViewById(R.id.comic_strip)
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
 
+    private val loadingText: String by lazy(NONE) { root.context.getString(R.string.loading) }
+
     fun bind(page: Page) {
         comicTitle.apply {
             text = page.title
@@ -71,16 +74,16 @@ class StripViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
     fun showPlaceholder() {
         comicTitle.apply {
-            text = "Loading"
-            contentDescription = "Loading"
+            text = loadingText
+            contentDescription = loadingText
         }
         comicStrip.apply {
             clearAnimation()
             setImageBitmap(null)
-            contentDescription = "Loading"
+            contentDescription = loadingText
             setOnClickListener(null)
         }
-        comicAlt.text = "Loading"
+        comicAlt.text = loadingText
 
     }
 
