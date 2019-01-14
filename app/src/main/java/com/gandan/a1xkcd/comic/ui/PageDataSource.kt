@@ -8,12 +8,12 @@ import androidx.paging.ItemKeyedDataSource
 import await
 import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.service.Page
-import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.service.XkcdApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class PageDataSourceFactory(
-        private val api: XkcdService,
+        private val api: XkcdApi,
         private val uiScope: CoroutineScope,
         private val activity: ComicActivity
 ) : DataSource.Factory<Int, Page>() {
@@ -26,7 +26,7 @@ class PageDataSourceFactory(
 
 }
 
-class PageDataSource(private val api: XkcdService,
+class PageDataSource(private val api: XkcdApi,
                      private val uiScope: CoroutineScope,
                      private val activity: ComicActivity) : ItemKeyedDataSource<Int, Page>() {
 
