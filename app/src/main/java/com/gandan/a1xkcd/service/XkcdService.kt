@@ -1,11 +1,13 @@
 package com.gandan.a1xkcd.service
 
 import com.google.gson.annotations.SerializedName
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.util.concurrent.Executors
 
 interface XkcdService {
 
@@ -42,8 +44,9 @@ data class Page(
         val day: String
 )
 
-fun createXkcdService(baseUrl: String): XkcdService {
+fun createXkcdService(webClient: OkHttpClient, baseUrl: String): XkcdService {
     return Retrofit.Builder()
+            .client(webClient)
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
