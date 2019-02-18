@@ -26,7 +26,7 @@ interface TestAppComponent : AppComponent
 
 val mockWebServer = MockWebServer()
 
-val localhost = InetAddress.getByName("localhost").canonicalHostName
+val localhost = InetAddress.getLocalHost().canonicalHostName
 val localhostCertificate = HeldCertificate.Builder()
     .addSubjectAlternativeName(localhost)
     .build()

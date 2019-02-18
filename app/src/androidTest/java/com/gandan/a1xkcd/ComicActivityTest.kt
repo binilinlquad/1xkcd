@@ -19,7 +19,7 @@ class ComicActivityTest {
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule<ComicActivity>(ComicActivity::class.java)
+    val activityRule = ActivityTestRule<ComicActivity>(ComicActivity::class.java, true, false)
 
     @Before
     fun setUp() {
@@ -46,7 +46,8 @@ class ComicActivityTest {
 
     @Test
     fun test_check_comic_shown() {
-//        SystemClock.sleep(10000)
+        // launch after mock web server is started
+        activityRule.launchActivity(null)
         onView(withId(R.id.comic_strip)).check(matches(isDisplayed()))
     }
 
