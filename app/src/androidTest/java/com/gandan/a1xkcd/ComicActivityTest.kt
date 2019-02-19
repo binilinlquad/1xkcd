@@ -1,16 +1,11 @@
 package com.gandan.a1xkcd
 
-import android.os.SystemClock
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.rule.ActivityTestRule
-import com.gandan.a1xkcd.di.localhostCertificate
-import com.gandan.a1xkcd.di.mockWebServer
+import com.gandan.a1xkcd.rule.AcceptanceTestRule
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.tls.HandshakeCertificates
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,16 +14,11 @@ class ComicActivityTest {
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule<ComicActivity>(ComicActivity::class.java, true, false)
+    val activityRule = AcceptanceTestRule(ComicActivity::class.java, MOCKWEBSERVER_PORT)
 
     @Before
     fun setUp() {
-        val serverCertificates = HandshakeCertificates.Builder()
-            .heldCertificate(localhostCertificate)
-            .build()
-        mockWebServer.useHttps(serverCertificates.sslSocketFactory(), false)
-        mockWebServer.start(8080)
-        mockWebServer.enqueue(
+        activityRule.mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setBody(
@@ -39,15 +29,8 @@ class ComicActivityTest {
         )
     }
 
-    @After
-    fun tearDown() {
-        mockWebServer.shutdown()
-    }
-
     @Test
     fun test_check_comic_shown() {
-        // launch after mock web server is started
-        activityRule.launchActivity(null)
         onView(withId(R.id.comic_strip)).check(matches(isDisplayed()))
     }
 
