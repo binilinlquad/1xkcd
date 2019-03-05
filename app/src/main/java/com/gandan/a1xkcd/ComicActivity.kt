@@ -17,20 +17,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class ComicActivity : DaggerAppCompatActivity() {
-    private val job = Job() + Dispatchers.Main
+class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
+
     @Inject
     lateinit var service: XkcdService
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
 
-        val uiScope = CoroutineScope(job)
-
-        val pageSourceFactory = PageDataSourceFactory(service, uiScope, this)
-
+        val pageSourceFactory = PageDataSourceFactory(service, this, this)
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
                 .build()
         val pagedPageAdapter = ComicPageAdapter()
@@ -41,7 +43,7 @@ class ComicActivity : DaggerAppCompatActivity() {
     }
 
     override fun onDestroy() {
-        job.cancelChildren()
         super.onDestroy()
+        job.cancelChildren()
     }
 }
