@@ -84,6 +84,7 @@ dependencies {
     androidTestImplementation 'com.google.dagger:dagger-android:2.21'
     androidTestImplementation 'com.google.dagger:dagger-android-support:2.21'
     androidTestImplementation 'com.squareup.okhttp3:okhttp-tls:3.13.1'
+    androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     androidTestUtil 'androidx.test:orchestrator:1.1.1'
 
     kaptAndroidTest 'com.google.dagger:dagger-compiler:2.21'
