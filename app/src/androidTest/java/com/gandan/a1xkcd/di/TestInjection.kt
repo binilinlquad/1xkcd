@@ -21,7 +21,10 @@ import okhttp3.tls.HandshakeCertificates
         FakeServiceModule::class
     ]
 )
-interface TestAppComponent : AppComponent
+interface TestAppComponent : AppComponent {
+
+    fun okHttpClient(): OkHttpClient
+}
 
 @Module
 class FakeServiceModule : ServiceModule {
