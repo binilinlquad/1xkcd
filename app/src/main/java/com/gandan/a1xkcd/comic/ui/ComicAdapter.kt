@@ -4,13 +4,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gandan.a1xkcd.R
 import com.gandan.a1xkcd.service.Page
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.RequestCreator
+import java.lang.Exception
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ComicPageAdapter(private val imageLoader: Picasso) : PagedListAdapter<Page, StripViewHolder>(diffUtil) {
@@ -48,6 +52,7 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
     private val comicTitle: TextView = root.findViewById(R.id.comic_title)
     private val comicStrip: ImageView = root.findViewById(R.id.comic_strip)
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
+    private val comicLoading: ProgressBar = root.findViewById(R.id.comic_loading)
 
     private val loadingText: String by lazy(NONE) { root.context.getString(R.string.loading) }
     private var animator: PageAnimator? = null
@@ -58,8 +63,13 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
             contentDescription = "Title is ${page.title}"
         }
         comicStrip.apply {
-            imageLoader.load(page.img).into(comicStrip)
+            imageLoader.load(page.img)
+                .showProgressBar()
+                .intoAndHideProgressBar(
+                    comicStrip
+                )
             contentDescription = page.alt
+
             setOnClickListener {
                 toggleComitStripAndAltText()
             }
@@ -94,5 +104,23 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
             animator!!.showComic()
         }
 
+    }
+
+    private fun RequestCreator.showProgressBar(): RequestCreator {
+        return this.also { comicLoading.visibility = View.VISIBLE }
+    }
+
+    private fun RequestCreator.intoAndHideProgressBar(target: ImageView) {
+        this.into(target, HideProgressBar())
+    }
+
+    inner class HideProgressBar : Callback {
+        override fun onError(e: Exception?) {
+            comicLoading.visibility = View.GONE
+        }
+
+        override fun onSuccess() {
+            comicLoading.visibility = View.GONE
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.gandan.a1xkcd
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
@@ -43,11 +44,20 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
         comics.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         comics.adapter = pagedPageAdapter
 
-        livePages.observe(this, Observer { pagedList -> pagedPageAdapter.submitList(pagedList) })
+        livePages.observe(this, Observer { pagedList ->
+            pagedPageAdapter.submitList(pagedList)
+            hideInitialLoading()
+        })
     }
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancelChildren()
+    }
+
+    private fun hideInitialLoading() {
+        if (initial_loading.visibility == View.VISIBLE) {
+            initial_loading.visibility = View.GONE
+        }
     }
 }
