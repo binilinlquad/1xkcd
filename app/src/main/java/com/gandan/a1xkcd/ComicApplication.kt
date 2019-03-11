@@ -3,6 +3,7 @@ package com.gandan.a1xkcd
 import android.app.Activity
 import android.app.Application
 import com.gandan.a1xkcd.di.AppComponent
+import com.gandan.a1xkcd.di.AppModule
 import com.gandan.a1xkcd.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -23,7 +24,9 @@ open class ComicApplication : Application(), HasActivityInjector {
     }
 
     protected open fun applicationInjector(): AppComponent {
-        return DaggerAppComponent.create()
+        return DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
 
 }

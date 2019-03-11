@@ -13,10 +13,10 @@ import com.gandan.a1xkcd.service.Page
 import com.squareup.picasso.Picasso
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ComicPageAdapter : PagedListAdapter<Page, StripViewHolder>(diffUtil) {
+class ComicPageAdapter(private val imageLoader: Picasso) : PagedListAdapter<Page, StripViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StripViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_page, parent, false)
-        return StripViewHolder(itemView)
+        return StripViewHolder(itemView, imageLoader)
     }
 
     override fun onBindViewHolder(holder: StripViewHolder, position: Int) {
@@ -44,7 +44,7 @@ class ComicPageAdapter : PagedListAdapter<Page, StripViewHolder>(diffUtil) {
     }
 }
 
-class StripViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerView.ViewHolder(root) {
     private val comicTitle: TextView = root.findViewById(R.id.comic_title)
     private val comicStrip: ImageView = root.findViewById(R.id.comic_strip)
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
@@ -58,7 +58,7 @@ class StripViewHolder(root: View) : RecyclerView.ViewHolder(root) {
             contentDescription = "Title is ${page.title}"
         }
         comicStrip.apply {
-            Picasso.get().load(page.img).into(comicStrip)
+            imageLoader.load(page.img).into(comicStrip)
             contentDescription = page.alt
             setOnClickListener {
                 toggleComitStripAndAltText()
