@@ -7,31 +7,26 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
+import com.gandan.a1xkcd.util.ComicDispatcher
+import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.jakewharton.espresso.OkHttp3IdlingResource
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.RecordedRequest
 import okio.Buffer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 class ComicActivityTest {
 
     @Rule
     @JvmField
-    val activityRule = AcceptanceTestRule(ComicActivity::class.java, MOCKWEBSERVER_PORT)
+    val activityRule = AcceptanceTestRule(ComicActivity::class.java, true, false, MOCKWEBSERVER_PORT)
 
     @Test
     fun test_check_comic_shown() {
-        // wait until sample image is load
-        latch.await(3, TimeUnit.SECONDS)
+        onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
-        onView(withId(R.id.comic_strip))
-            .check(matches(isDisplayed()))
+        onView(withId(R.id.comic_strip)).check(matches(isDisplayed()))
     }
 
 
@@ -39,32 +34,17 @@ class ComicActivityTest {
     fun setUp() {
         idlingRegistry.register(okHttp3IdlingResource)
 
-        mockWebServer.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest?): MockResponse {
-                requireNotNull(request)
-
-                return when {
-                    request.path.contains("/info.0.json") -> {
-                        latch.countDown()
-                        MockResponse()
-                            .setResponseCode(200)
-                            .setBody(sampleLatestPage("${mockWebServer.url("/sample.jpg")}"))
-                    }
-                    request.path.contains("/sample.jpg") -> {
-                        latch.countDown()
-                        MockResponse()
-                            .setResponseCode(200)
-                            .setBody(
-                                testContext.assets.open("sample.jpg")
-                                    .let { Buffer().readFrom(it) }
-                            )
-                    }
-                    else -> throw IllegalArgumentException("request $request is not handled")
-                }
-            }
-
+        mockWebServer.dispatcher = ComicDispatcher().apply {
+            whenPathContains("/info.0.json")
+                .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
+            whenPathContains("/sample.jpg")
+                .thenResponseSuccess(testContext.assets.open("sample.jpg")
+                    .let { Buffer().readFrom(it) })
         }
+
+        activityRule.launchActivity(null)
     }
+
 
     private val testApplication
         get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
@@ -74,8 +54,6 @@ class ComicActivityTest {
 
     private val okHttp3IdlingResource
         get() = OkHttp3IdlingResource.create("OkHttpIdlingResource", okHttpClient)
-
-    private val latch = CountDownLatch(2)
 
     private val testContext = InstrumentationRegistry.getInstrumentation().context
 
