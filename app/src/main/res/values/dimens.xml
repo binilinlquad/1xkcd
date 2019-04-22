@@ -4,5 +4,6 @@
     <dimen name="comic_alt_padding">8dp</dimen>
     <dimen name="item_card_margin">8dp</dimen>
     <dimen name="item_card_corner_radius">6dp</dimen>
-    <dimen name="item_padding">4dp</dimen>
+    <dimen name="item_padding">8dp</dimen>
+    <dimen name="item_title_comic_strip_margin">4dp</dimen>
 </resources>
