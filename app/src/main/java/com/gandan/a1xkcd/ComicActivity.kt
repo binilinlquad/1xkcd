@@ -41,7 +41,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
                 .build()
         val pagedPageAdapter = ComicPageAdapter(imageDownloader)
-        comics.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        comics.layoutManager = LinearLayoutManager(this)
         comics.adapter = pagedPageAdapter
 
         livePages.observe(this, Observer { pagedList ->

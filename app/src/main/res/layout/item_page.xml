@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <TextView
-            android:id="@+id/comic_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/latest_strip_title_placeholder"
-            android:textStyle="bold"
-            android:textSize="@dimen/title_strip_font_size"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/item_card_margin"
+        app:cardCornerRadius="@dimen/item_card_corner_radius">
 
-    <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/comic_strip"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/comic_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/item_padding">
 
-    <TextView
-            android:id="@+id/comic_alt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@id/comic_strip"
-            app:layout_constraintRight_toRightOf="@id/comic_strip"
-            app:layout_constraintBottom_toBottomOf="@id/comic_strip"
-            app:layout_constraintTop_toTopOf="@id/comic_strip"
-            android:visibility="invisible"
-            android:alpha="0"
-            android:padding="@dimen/comic_alt_padding"/>
+        <TextView
+                android:id="@+id/comic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/latest_strip_title_placeholder"
+                android:textStyle="bold"
+                android:textSize="@dimen/title_strip_font_size"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"/>
 
-    <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/comic_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:indeterminate="true"
-            style="@android:style/Widget.Holo.ProgressBar.Large"/>
+        <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/comic_strip"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/comic_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+                android:id="@+id/comic_alt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="@id/comic_strip"
+                app:layout_constraintRight_toRightOf="@id/comic_strip"
+                app:layout_constraintBottom_toBottomOf="@id/comic_strip"
+                app:layout_constraintTop_toTopOf="@id/comic_strip"
+                android:visibility="invisible"
+                android:alpha="0"
+                android:padding="@dimen/comic_alt_padding"/>
+
+        <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/comic_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:indeterminate="true"
+                style="@android:style/Widget.Holo.ProgressBar.Large"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

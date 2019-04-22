@@ -2,4 +2,7 @@
 <resources>
     <dimen name="title_strip_font_size">18sp</dimen>
     <dimen name="comic_alt_padding">8dp</dimen>
+    <dimen name="item_card_margin">8dp</dimen>
+    <dimen name="item_card_corner_radius">6dp</dimen>
+    <dimen name="item_padding">4dp</dimen>
 </resources>

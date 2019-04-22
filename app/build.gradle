@@ -59,8 +59,7 @@ dependencies {
 
     implementation "androidx.paging:paging-runtime:$paging_version" // use -ktx for Kotlin
 
-    // alternatively - without Android dependencies for testing
-    testImplementation "androidx.paging:paging-common:$paging_version" // use -ktx for Kotlin
+    implementation "androidx.cardview:cardview:1.0.0"
 
     // dagger
     implementation 'com.google.dagger:dagger:2.21'
@@ -72,6 +71,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.13.1'
+    // alternatively - without Android dependencies for testing
+    testImplementation "androidx.paging:paging-common:$paging_version" // use -ktx for Kotlin
 
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
