@@ -1,7 +1,6 @@
 package com.gandan.a1xkcd
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
@@ -33,31 +32,33 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
+    private lateinit var pagedPageAdapter: ComicPageAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
 
-        val pageSourceFactory = PageDataSourceFactory(service, this, this)
-        val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
-                .build()
-        val pagedPageAdapter = ComicPageAdapter(imageDownloader)
+        pagedPageAdapter = ComicPageAdapter(imageDownloader)
         comics.layoutManager = LinearLayoutManager(this)
         comics.adapter = pagedPageAdapter
 
-        livePages.observe(this, Observer { pagedList ->
-            pagedPageAdapter.submitList(pagedList)
-            hideInitialLoading()
-        })
+        comics_refresher.setOnRefreshListener { refreshComics() }
+        refreshComics()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancelChildren()
     }
 
-    private fun hideInitialLoading() {
-        if (initial_loading.visibility == View.VISIBLE) {
-            initial_loading.visibility = View.GONE
-        }
+    private fun refreshComics() {
+        val pageSourceFactory = PageDataSourceFactory(service, this, this)
+        val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
+            .build()
+        livePages.observe(this, Observer { pagedList ->
+            pagedPageAdapter.submitList(pagedList)
+            comics_refresher.isRefreshing = false
+        })
     }
 }
