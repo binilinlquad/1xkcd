@@ -54,7 +54,7 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
     private val comicLoading: ProgressBar = root.findViewById(R.id.comic_loading)
 
-    private val loadingText: String by lazy(NONE) { root.context.getString(R.string.loading) }
+    private val titlePlaceHolder: String by lazy(NONE) { root.context.getString(R.string.getting_comic_title_placeholder) }
     private var animator: PageAnimator? = null
 
     fun bind(page: Page) {
@@ -80,16 +80,16 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
 
     fun showPlaceholder() {
         comicTitle.apply {
-            text = loadingText
-            contentDescription = loadingText
+            text = titlePlaceHolder
+            contentDescription = titlePlaceHolder
         }
         comicStrip.apply {
             clearAnimation()
             setImageBitmap(null)
-            contentDescription = loadingText
+            contentDescription = titlePlaceHolder
             setOnClickListener(null)
         }
-        comicAlt.text = loadingText
+        comicAlt.text = titlePlaceHolder
 
     }
 

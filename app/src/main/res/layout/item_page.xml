@@ -17,7 +17,7 @@
                 android:id="@+id/comic_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/latest_strip_title_placeholder"
+                android:text="@string/getting_comic_title_placeholder"
                 android:textStyle="bold"
                 android:textSize="@dimen/title_strip_font_size"
                 app:layout_constraintLeft_toLeftOf="parent"
