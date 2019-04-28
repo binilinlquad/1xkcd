@@ -1,5 +1,5 @@
 <resources>
   <string name="app_name">1xkcd</string>
-  <string name="cannot_load_strip">Cannot get latest strip :(</string>
+  <string name="cannot_load_comic_title_placeholder">Cannot get your comic :(</string>
   <string name="getting_comic_title_placeholder">Getting your comic!</string>
 </resources>

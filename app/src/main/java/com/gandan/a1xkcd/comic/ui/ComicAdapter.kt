@@ -117,6 +117,7 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
     inner class HideProgressBar : Callback {
         override fun onError(e: Exception?) {
             comicLoading.visibility = View.GONE
+            comicTitle.setText(R.string.cannot_load_comic_title_placeholder)
         }
 
         override fun onSuccess() {
