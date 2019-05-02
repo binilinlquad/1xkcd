@@ -3,14 +3,15 @@ package com.gandan.a1xkcd
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
 import com.gandan.a1xkcd.util.ComicDispatcher
+import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import okio.Buffer
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,9 +25,11 @@ class ComicActivityTest {
 
     @Test
     fun test_check_comic_shown() {
+        activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
-        onView(withId(R.id.comic_strip)).check(matches(isDisplayed()))
+        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
     }
 
 
@@ -41,8 +44,6 @@ class ComicActivityTest {
                 .thenResponseSuccess(testContext.assets.open("sample.jpg")
                     .let { Buffer().readFrom(it) })
         }
-
-        activityRule.launchActivity(null)
     }
 
 
