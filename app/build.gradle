@@ -36,58 +36,91 @@ android {
     }
 }
 
-dependencies {
-    def paging_version = "2.1.0"
+def versions = [
+        // app
+        paging_version : "2.1.0",
+        coroutine: "1.0.1",
+        dagger: "2.21",
+        appcompat: "1.0.2",
+        exifinterface: "1.0.0",
+        constraintlayout: "1.1.3",
+        okhttp: "3.13.1",
+        retrofit: "2.5.0",
+        gson: "2.8.5",
+        converter_gson : "2.4.0",
+        picasso : "2.71828",
+        photoview : "2.2.0",
+        recyclerview : "1.0.0",
+        cardview : "1.0.0",
+        lifecycle_extension : "1.1.1",
 
+        mockito_kotlin : "2.1.0",
+        mockwebserver : "3.13.1",
+        junit : "4.12",
+        runner : "1.1.1",
+        orchestrator : "1.1.1",
+        rules : "1.1.1",
+        espresso_core : "3.1.1",
+        okhttp_tls : "3.13.1",
+        okhttp_idling_resource : "1.0.0",
+
+]
+
+dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.exifinterface:exifinterface:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.github.chrisbanes:PhotoView:2.2.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutine"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutine"
+
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "androidx.exifinterface:exifinterface:$versions.exifinterface"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.google.code.gson:gson:$versions.gson"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    implementation "com.squareup.picasso:picasso:$versions.picasso"
+
+    implementation "com.github.chrisbanes:PhotoView:$versions.photoview"
+    implementation "androidx.recyclerview:recyclerview:$versions.recyclerview"
 
     // LiveData + ViewModel
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-
-    implementation "androidx.paging:paging-runtime:$paging_version" // use -ktx for Kotlin
-
-    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "android.arch.lifecycle:extensions:$versions.lifecycle_extension"
+    implementation "androidx.paging:paging-runtime:$versions.paging_version" // use -ktx for Kotlin
+    implementation "androidx.cardview:cardview:$versions.cardview"
 
     // dagger
-    implementation 'com.google.dagger:dagger:2.21'
-    implementation 'com.google.dagger:dagger-android:2.21'
-    implementation 'com.google.dagger:dagger-android-support:2.21'
-    kapt 'com.google.dagger:dagger-compiler:2.21'
-    kapt 'com.google.dagger:dagger-android-processor:2.21'
+    implementation "com.google.dagger:dagger:$versions.dagger"
+    implementation "com.google.dagger:dagger-android:$versions.dagger"
+    implementation "com.google.dagger:dagger-android-support:$versions.dagger"
+    kapt "com.google.dagger:dagger-compiler:$versions.dagger"
+    kapt "com.google.dagger:dagger-android-processor:$versions.dagger"
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
-    testImplementation 'com.squareup.okhttp3:mockwebserver:3.13.1'
-    // alternatively - without Android dependencies for testing
-    testImplementation "androidx.paging:paging-common:$paging_version" // use -ktx for Kotlin
+    //region androidTest
 
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
-    androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.13.1'
-    androidTestImplementation 'com.google.dagger:dagger:2.21'
-    androidTestImplementation 'com.google.dagger:dagger-android:2.21'
-    androidTestImplementation 'com.google.dagger:dagger-android-support:2.21'
-    androidTestImplementation 'com.squareup.okhttp3:okhttp-tls:3.13.1'
-    androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
-    androidTestUtil 'androidx.test:orchestrator:1.1.1'
+    // to let androidTest generate dagger graph too
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
+    kaptAndroidTest "com.google.dagger:dagger-android-processor:$versions.dagger"
 
-    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.21'
-    kaptAndroidTest 'com.google.dagger:dagger-android-processor:2.21'
+    androidTestImplementation "androidx.test:runner:$versions.runner"
+    androidTestImplementation "androidx.test:rules:$versions.runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso_core"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
+    androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$versions.okhttp_tls"
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$versions.okhttp_idling_resource"
+
+    androidTestUtil "androidx.test:orchestrator:$versions.orchestrator"
+
+    //endregion
+
+    //region test
+
+    testImplementation "junit:junit:$versions.junit"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
+
+    //endregion test
+
 }
