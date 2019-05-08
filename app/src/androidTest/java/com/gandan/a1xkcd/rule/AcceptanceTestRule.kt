@@ -16,7 +16,7 @@ class AcceptanceTestRule<T : Activity> : ActivityTestRule<T> {
         private val DEFAULT_PORT = 65000
     }
 
-    val mockWebServer = MockWebServer()
+    val mockWebServer: MockWebServer by lazy { MockWebServer() }
 
     constructor(activityClass: Class<T>?) : this(activityClass, DEFAULT_PORT)
     constructor(activityClass: Class<T>?, port: Int) : super(activityClass, true) {
