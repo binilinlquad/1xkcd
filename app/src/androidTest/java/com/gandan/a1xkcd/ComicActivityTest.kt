@@ -1,5 +1,6 @@
 package com.gandan.a1xkcd
 
+import android.os.SystemClock
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -28,6 +29,7 @@ class ComicActivityTest {
         activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
+        SystemClock.sleep(1000)
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
     }
