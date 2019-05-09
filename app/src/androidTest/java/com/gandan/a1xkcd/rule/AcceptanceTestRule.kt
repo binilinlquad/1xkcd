@@ -13,7 +13,7 @@ class AcceptanceTestRule<T : Activity> : ActivityTestRule<T> {
 
     companion object {
         private val TAG = AcceptanceTestRule::class.java.simpleName
-        private val DEFAULT_PORT = 65000
+        private const val DEFAULT_PORT = 65000
     }
 
     val mockWebServer: MockWebServer by lazy { MockWebServer() }

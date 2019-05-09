@@ -1,16 +1,14 @@
 package com.gandan.a1xkcd
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
+import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.util.ComicDispatcher
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.gandan.a1xkcd.util.waitUntilNotDisplayed
-import com.jakewharton.espresso.OkHttp3IdlingResource
 import okio.Buffer
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -23,6 +21,8 @@ class ComicActivityTest {
     @Rule
     @JvmField
     val activityRule = AcceptanceTestRule(ComicActivity::class.java, true, false, MOCKWEBSERVER_PORT)
+
+    private val testFixture = ComicAcceptanceTestFixture(activityRule)
 
     @Test
     fun test_check_comic_shown() {
@@ -37,35 +37,21 @@ class ComicActivityTest {
 
     @Before
     fun setUp() {
-        idlingRegistry.register(okHttp3IdlingResource)
+        testFixture.setUp()
 
         mockWebServer.dispatcher = ComicDispatcher().apply {
             whenPathContains("/info.0.json")
                 .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
             whenPathContains("/sample.jpg")
-                .thenResponseSuccess(testContext.assets.open("sample.jpg")
+                .thenResponseSuccess(
+                    testFixture.openTestAsset("sample.jpg")
                     .let { Buffer().readFrom(it) })
         }
     }
 
 
-    private val testApplication
-        get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
-
-    private val okHttpClient
-        get() = testApplication.component.okHttpClient()
-
-    private val okHttp3IdlingResource
-        get() = OkHttp3IdlingResource.create("OkHttpIdlingResource", okHttpClient)
-
-    private val testContext = InstrumentationRegistry.getInstrumentation().context
-
     private val mockWebServer
-        get() = activityRule.mockWebServer
-
-    private val idlingRegistry
-        get() = IdlingRegistry.getInstance()
-
+        get() = testFixture.mockWebServer
 
     private fun sampleLatestPage(imageUrl: String): String {
         return """
@@ -86,6 +72,6 @@ class ComicActivityTest {
 
     @After
     fun tearDown() {
-        idlingRegistry.unregister(okHttp3IdlingResource)
+        testFixture.tearDown()
     }
 }
