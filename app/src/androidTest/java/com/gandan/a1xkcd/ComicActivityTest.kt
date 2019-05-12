@@ -22,7 +22,9 @@ class ComicActivityTest {
     @JvmField
     val activityRule = AcceptanceTestRule(ComicActivity::class.java, true, false, MOCKWEBSERVER_PORT)
 
-    private val testFixture = ComicAcceptanceTestFixture(activityRule)
+    @Rule
+    @JvmField
+    val testFixture = ComicAcceptanceTestFixture(activityRule)
 
     @Test
     fun test_check_comic_shown() {
@@ -37,8 +39,6 @@ class ComicActivityTest {
 
     @Before
     fun setUp() {
-        testFixture.setUp()
-
         mockWebServer.dispatcher = ComicDispatcher().apply {
             whenPathContains("/info.0.json")
                 .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
@@ -70,8 +70,4 @@ class ComicActivityTest {
             """.trimIndent()
     }
 
-    @After
-    fun tearDown() {
-        testFixture.tearDown()
-    }
 }

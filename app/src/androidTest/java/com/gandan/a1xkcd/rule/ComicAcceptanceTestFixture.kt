@@ -5,9 +5,10 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import com.gandan.a1xkcd.TestApplication
 import com.jakewharton.espresso.OkHttp3IdlingResource
+import org.junit.rules.ExternalResource
 import java.io.InputStream
 
-class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestRule<T>) {
+class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestRule<T>) : ExternalResource() {
 
     val mockWebServer
         get() = rule.mockWebServer
@@ -27,12 +28,22 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
     private val idlingRegistry
         get() = IdlingRegistry.getInstance()
 
-    fun setUp() {
+    private fun setUp() {
         idlingRegistry.register(okHttp3IdlingResource)
     }
 
-    fun tearDown() {
+    private fun tearDown() {
         idlingRegistry.unregister(okHttp3IdlingResource)
+    }
+
+    override fun before() {
+        setUp()
+        super.before()
+    }
+
+    override fun after() {
+        super.after()
+        tearDown()
     }
 
     fun openTestAsset(filename: String): InputStream {
