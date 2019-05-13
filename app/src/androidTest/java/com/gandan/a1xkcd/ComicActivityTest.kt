@@ -27,7 +27,7 @@ class ComicActivityTest {
     val testFixture = ComicAcceptanceTestFixture(activityRule)
 
     @Test
-    fun test_check_comic_shown() {
+    fun given_opening_app_and_connection_good__then_user_should_able_see_comic_strip() {
         activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
