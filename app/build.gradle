@@ -39,7 +39,7 @@ android {
 def versions = [
         // app
         paging_version : "2.1.0",
-        coroutine: "1.0.1",
+        coroutine: "1.2.1",
         dagger: "2.21",
         appcompat: "1.0.2",
         exifinterface: "1.0.0",
