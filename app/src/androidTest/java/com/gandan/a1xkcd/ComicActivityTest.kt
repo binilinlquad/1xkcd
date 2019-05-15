@@ -1,6 +1,7 @@
 package com.gandan.a1xkcd
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
@@ -11,8 +12,6 @@ import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.gandan.a1xkcd.util.waitUntilNotDisplayed
 import okio.Buffer
 import org.hamcrest.Matchers.allOf
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +26,8 @@ class ComicActivityTest {
     val testFixture = ComicAcceptanceTestFixture(activityRule)
 
     @Test
-    fun given_opening_app_and_connection_good__then_user_should_able_see_comic_strip() {
+    fun given_opening_app_and_success_load__then_user_should_able_see_comic_strip() {
+        mockWebServer.dispatcher = successLoadDispatcher()
         activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
@@ -36,17 +36,34 @@ class ComicActivityTest {
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun given_opening_app_and_failed_load_strip__then_user_should_able_reload_strip() {
+        mockWebServer.dispatcher = failLoadDispatcher()
+        activityRule.launchActivity(null)
+        onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
 
-    @Before
-    fun setUp() {
-        mockWebServer.dispatcher = ComicDispatcher().apply {
+        mockWebServer.dispatcher = successLoadDispatcher()
+        onView(withId(R.id.manual_refresh)).perform(click())
+        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
+    }
+
+    private fun successLoadDispatcher(): ComicDispatcher {
+        return ComicDispatcher().apply {
             whenPathContains("/info.0.json")
                 .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
+
             whenPathContains("/sample.jpg")
                 .thenResponseSuccess(
                     testFixture.openTestAsset("sample.jpg")
-                    .let { Buffer().readFrom(it) })
+                        .let { Buffer().readFrom(it) })
         }
+    }
+
+
+    private fun failLoadDispatcher(): ComicDispatcher {
+        return ComicDispatcher()
     }
 
 

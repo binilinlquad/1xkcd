@@ -43,6 +43,8 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
         comics.adapter = pagedPageAdapter
 
         comics_refresher.setOnRefreshListener { refreshComics() }
+        manual_refresh.setOnClickListener { refreshComics() }
+
         refreshComics()
     }
 

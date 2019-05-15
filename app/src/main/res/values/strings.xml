@@ -2,4 +2,5 @@
   <string name="app_name">1xkcd</string>
   <string name="cannot_load_comic_title_placeholder">Cannot get your comic :(</string>
   <string name="getting_comic_title_placeholder">Getting your comic!</string>
+  <string name="manual_refresh_guide">Touch this for Refresh</string>
 </resources>

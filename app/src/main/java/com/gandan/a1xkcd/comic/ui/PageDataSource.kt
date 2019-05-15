@@ -1,6 +1,7 @@
 package com.gandan.a1xkcd.comic.ui
 
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
@@ -9,6 +10,7 @@ import await
 import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -42,9 +44,16 @@ class PageDataSource(private val service: XkcdService,
                 callback.onResult(listOf(latestPage), 0, totalPages)
 
                 Log.i(TAG, "load latest page successfully")
+
+                activity.manual_refresh.visibility = View.GONE
+                activity.comics.visibility = View.VISIBLE
+
             } catch (e: Throwable) {
-                Log.e(TAG, "fail loading latest page with reason ${e.message}")
+                Log.i(TAG, "fail loading latest page with reason ${e.message}")
                 Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
+
+                activity.manual_refresh.visibility = View.VISIBLE
+                activity.comics.visibility = View.GONE
             }
         }
     }
