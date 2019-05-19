@@ -117,6 +117,7 @@ dependencies {
     testImplementation "junit:junit:$versions.junit"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutine"
 
     //endregion test
 
