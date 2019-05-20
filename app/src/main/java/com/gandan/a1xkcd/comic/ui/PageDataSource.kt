@@ -1,20 +1,15 @@
 package com.gandan.a1xkcd.comic.ui
 
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
 import await
 import com.gandan.a1xkcd.ComicActivity
+import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
-import kotlinx.android.synthetic.main.activity_comics.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class PageDataSourceFactory(
     private val service: XkcdService,
@@ -33,37 +28,31 @@ class PageDataSourceFactory(
 class PageDataSource(
     private val service: XkcdService,
     private val uiScope: CoroutineScope,
-    private val activity: ComicActivity
+    private val refreshListener: RefreshListener
 ) : ItemKeyedDataSource<Int, Page>() {
 
     companion object {
         private val TAG = PageDataSource::class.java.simpleName
     }
 
+    @Suppress("DeferredResultUnused")
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Page>) {
-        uiScope.launch {
+        runBlocking {
 
             async(Dispatchers.IO) {
                 try {
                     val latestPage = service.latestStrip().await()
                     val totalPages = latestPage.num
 
-                    uiScope.launch {
-                        callback.onResult(listOf(latestPage), 0, totalPages)
+                    Log.i(TAG, "load latest page successfully")
+                    callback.onResult(listOf(latestPage), 0, totalPages)
 
-                        Log.i(TAG, "load latest page successfully")
+                    refreshListener.onRefresh()
 
-                        activity.manual_refresh.visibility = View.GONE
-                        activity.comics.visibility = View.VISIBLE
-                    }
                 } catch (e: Throwable) {
-                    uiScope.launch {
-                        Log.i(TAG, "fail loading latest page with reason ${e.message}")
-                        Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
+                    Log.i(TAG, "fail loading latest page with reason ${e.message}")
 
-                        activity.manual_refresh.visibility = View.VISIBLE
-                        activity.comics.visibility = View.GONE
-                    }
+                    refreshListener.onError(e)
                 }
 
             }
@@ -80,7 +69,6 @@ class PageDataSource(
                 Log.i(TAG, "load page $num successfully")
             } catch (e: Throwable) {
                 Log.e(TAG, "fail loading page $num with reason ${e.message}")
-                Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
             }
         }
     }

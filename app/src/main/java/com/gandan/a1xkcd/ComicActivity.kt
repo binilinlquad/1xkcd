@@ -1,6 +1,8 @@
 package com.gandan.a1xkcd
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
@@ -13,14 +15,11 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
+class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener {
 
     @Inject
     lateinit var service: XkcdService
@@ -63,4 +62,29 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
             comics_refresher.isRefreshing = false
         })
     }
+
+    override fun onError(error: Throwable) {
+        launch {
+            Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
+
+            manual_refresh.visibility = View.VISIBLE
+            comics.visibility = View.GONE
+        }
+    }
+
+    override fun onRefresh() {
+        launch {
+            manual_refresh.visibility = View.GONE
+            comics.visibility = View.VISIBLE
+        }
+    }
+
+
+}
+
+
+interface RefreshListener {
+    fun onError(error: Throwable)
+
+    fun onRefresh()
 }
