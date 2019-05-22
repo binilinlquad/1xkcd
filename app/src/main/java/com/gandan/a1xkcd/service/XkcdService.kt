@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 interface XkcdService {
 
     @GET("info.0.json")
-    fun latestStrip(): Call<Page>
+    fun latestPage(): Call<Page>
 
     @GET("{pos}/info.0.json")
     fun at(@Path("pos") pos: Int): Call<Page>

@@ -3,7 +3,7 @@ package com.gandan.a1xkcd.comic.ui
 import android.view.View
 import android.view.animation.LinearInterpolator
 
-class PageAnimator(private val comicStrip: View, private val comicAlt: View) {
+class PageAnimator(private val comicPage: View, private val comicAlt: View) {
 
     companion object Duration {
         private const val DELAY_POST_ANIMATION = 500L
@@ -12,8 +12,8 @@ class PageAnimator(private val comicStrip: View, private val comicAlt: View) {
         private const val SHOW_ALT_TEXT = 250L
         private const val HIDE_ALT_TEXT = 100L
 
-        private const val FADE_STRIP_IN = 350L
-        private const val FADE_STRIP_OUT = 500L
+        private const val FADE_PAGE_IN = 350L
+        private const val FADE_PAGE_OUT = 500L
 
         private val linearInterpolator = LinearInterpolator()
     }
@@ -26,18 +26,18 @@ class PageAnimator(private val comicStrip: View, private val comicAlt: View) {
                     comicAlt.visibility = View.INVISIBLE
                 }
 
-        val comicStripRevealAnimation = comicStrip.animate()
+        val comicPageRevealAnimation = comicPage.animate()
                 .alpha(1f)
-                .setDuration(FADE_STRIP_IN)
+            .setDuration(FADE_PAGE_IN)
 
         hideAltTextAnimation.start()
-        comicStripRevealAnimation.start()
+        comicPageRevealAnimation.start()
     }
 
     fun showAltText() {
-        val comicStripFadeOutAnimator = comicStrip.animate()
+        val comicPageFadeOutAnimator = comicPage.animate()
                 .alpha(0.1f)
-                .setDuration(FADE_STRIP_OUT)
+            .setDuration(FADE_PAGE_OUT)
 
         val altTextRevealAnimator = comicAlt.animate()
                 .alpha(1f)
@@ -49,13 +49,13 @@ class PageAnimator(private val comicStrip: View, private val comicAlt: View) {
                     comicAlt.visibility = View.VISIBLE
                 }
 
-        comicStripFadeOutAnimator.start()
+        comicPageFadeOutAnimator.start()
         altTextRevealAnimator.start()
     }
 
     private fun runImmediateOrPostAnimation(animator: Runnable) {
-        if (comicStrip.animation.hasStarted() || !comicStrip.animation.hasEnded()) {
-            comicStrip.postDelayed(animator, DELAY_POST_ANIMATION)
+        if (comicPage.animation.hasStarted() || !comicPage.animation.hasEnded()) {
+            comicPage.postDelayed(animator, DELAY_POST_ANIMATION)
         } else if (comicAlt.animation.hasStarted() || !comicAlt.animation.hasEnded()) {
             comicAlt.postDelayed(animator, DELAY_POST_ANIMATION)
         } else {

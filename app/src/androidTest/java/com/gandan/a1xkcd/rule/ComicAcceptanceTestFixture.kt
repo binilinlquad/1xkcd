@@ -49,7 +49,7 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
         tearDown()
     }
 
-    fun responseWithSuccessOnlyFirstStrip() {
+    fun responseWithSuccessOnlyFirstPage() {
         val dispatcher = ComicDispatcher().apply {
             whenPathContains("/info.0.json")
                 .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
@@ -68,7 +68,7 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
     }
 
 
-    fun responseWithFailLoadStripImages() {
+    fun responseWithFailLoadPage() {
         mockWebServer.dispatcher = ComicDispatcher().apply {
             whenPathContains("/info.0.json")
                 .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))

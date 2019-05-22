@@ -41,7 +41,7 @@ class PageDataSource(
 
             async(Dispatchers.IO) {
                 try {
-                    val latestPage = service.latestStrip().await()
+                    val latestPage = service.latestPage().await()
                     val totalPages = latestPage.num
 
                     Log.i(TAG, "load latest page successfully")

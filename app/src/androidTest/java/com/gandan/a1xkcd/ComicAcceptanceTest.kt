@@ -13,7 +13,7 @@ import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 
-class ComicActivityTest {
+class ComicAcceptanceTest {
 
     @Rule
     @JvmField
@@ -24,34 +24,34 @@ class ComicActivityTest {
     val testFixture = ComicAcceptanceTestFixture(activityRule)
 
     @Test
-    fun given_opening_app_and_success_load__then_user_should_able_see_comic_strip() {
-        testFixture.responseWithSuccessOnlyFirstStrip()
+    fun given_opening_app_and_success_load__then_user_should_able_see_comic_page() {
+        testFixture.responseWithSuccessOnlyFirstPage()
         activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
     }
 
     @Test
-    fun given_opening_app_and_refresh_failed__then_user_should_able_reload_whole_strips() {
+    fun given_opening_app_and_refresh_failed__then_user_should_able_reload_whole_pages() {
         testFixture.responseWithFailAll()
         activityRule.launchActivity(null)
 
         onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
 
-        testFixture.responseWithSuccessOnlyFirstStrip()
+        testFixture.responseWithSuccessOnlyFirstPage()
         onView(withId(R.id.manual_refresh)).perform(click())
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
 
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
     }
 
     @Test
-    fun given_opening_app_and_failed_load_one_of_strip__then_user_should_able_to_reload_that_strip_only() {
-        testFixture.responseWithFailLoadStripImages()
+    fun given_opening_app_and_failed_load_one_of_page__then_user_should_able_to_reload_that_page_only() {
+        testFixture.responseWithFailLoadPage()
         activityRule.launchActivity(null)
 
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
@@ -59,12 +59,12 @@ class ComicActivityTest {
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).check(matches(isDisplayed()))
 
-        testFixture.responseWithSuccessOnlyFirstStrip()
+        testFixture.responseWithSuccessOnlyFirstPage()
 
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).perform(click())
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
 
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
     }
 
 }

@@ -11,9 +11,9 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 
-class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerView.ViewHolder(root) {
+class PageViewHolder(root: View, private val imageLoader: Picasso) : RecyclerView.ViewHolder(root) {
     private val comicTitle: TextView = root.findViewById(R.id.comic_title)
-    private val comicStrip: ImageView = root.findViewById(R.id.comic_strip)
+    private val comicPage: ImageView = root.findViewById(R.id.comic_page)
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
     private val comicLoading: ProgressBar = root.findViewById(R.id.comic_loading)
     private val comicRetry: TextView = root.findViewById(R.id.comic_retry)
@@ -36,11 +36,11 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
                 contentDescription = "Title is ${page.title}"
             }
 
-            comicStrip.apply {
+            comicPage.apply {
                 contentDescription = page.alt
 
                 setOnClickListener {
-                    toggleComitStripAndAltText()
+                    toggleComitPageAndAltText()
                 }
 
                 loadComicImage(this@run)
@@ -61,7 +61,7 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
             text = titlePlaceHolder
             contentDescription = titlePlaceHolder
         }
-        comicStrip.apply {
+        comicPage.apply {
             clearAnimation()
             setImageBitmap(null)
             contentDescription = titlePlaceHolder
@@ -71,9 +71,9 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
 
     }
 
-    private fun toggleComitStripAndAltText() {
+    private fun toggleComitPageAndAltText() {
         if (animator == null) {
-            animator = PageAnimator(comicStrip, comicAlt)
+            animator = PageAnimator(comicPage, comicAlt)
         }
 
         if (comicAlt.visibility != View.VISIBLE) {
@@ -88,7 +88,7 @@ class StripViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVi
         imageLoader.load(page.img)
             .showProgressBar()
             .intoAndHideProgressBar(
-                comicStrip
+                comicPage
             )
     }
 
