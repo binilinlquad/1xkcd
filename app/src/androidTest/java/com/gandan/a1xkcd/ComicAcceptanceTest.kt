@@ -29,7 +29,7 @@ class ComicAcceptanceTest {
     fun given_opening_app_and_success_load__then_user_should_able_see_comic_page() {
         testFixture.responseWithSuccessOnlyFirstPage()
         activityRule.launchActivity(null)
-        onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
+        waitComicPagesPopulated()
 
         val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
@@ -56,7 +56,7 @@ class ComicAcceptanceTest {
         testFixture.responseWithFailLoadPage()
         activityRule.launchActivity(null)
 
-        onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
+        waitComicPagesPopulated()
         val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageRetry(firstComic)).check(matches(isDisplayed()))
@@ -67,6 +67,10 @@ class ComicAcceptanceTest {
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
+    }
+
+    private fun waitComicPagesPopulated() {
+        onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
     }
 
     private fun pageProgressBar(pageContainerMatcher: Matcher<View>): Matcher<View> {
