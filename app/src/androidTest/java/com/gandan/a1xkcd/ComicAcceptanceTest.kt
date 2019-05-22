@@ -1,5 +1,6 @@
 package com.gandan.a1xkcd
 
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -9,6 +10,7 @@ import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.gandan.a1xkcd.util.waitUntilNotDisplayed
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +32,7 @@ class ComicAcceptanceTest {
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
     }
 
@@ -44,7 +46,7 @@ class ComicAcceptanceTest {
         testFixture.responseWithSuccessOnlyFirstPage()
         onView(withId(R.id.manual_refresh)).perform(click())
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
     }
@@ -56,15 +58,19 @@ class ComicAcceptanceTest {
 
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).check(matches(isDisplayed()))
 
         testFixture.responseWithSuccessOnlyFirstPage()
 
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).perform(click())
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
+    }
+
+    private fun pageProgressBar(pageMatcher: Matcher<View>): Matcher<View> {
+        return allOf(isDescendantOfA(pageMatcher), withId(R.id.comic_loading))
     }
 
 }
