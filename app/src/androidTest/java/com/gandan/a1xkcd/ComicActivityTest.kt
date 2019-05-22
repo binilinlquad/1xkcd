@@ -49,7 +49,22 @@ class ComicActivityTest {
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
     }
 
-    private val mockWebServer
-        get() = testFixture.mockWebServer
+    @Test
+    fun given_opening_app_and_failed_load_one_of_strip__then_user_should_able_to_reload_that_strip_only() {
+        testFixture.responseWithFailLoadStripImages()
+        activityRule.launchActivity(null)
+
+        onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
+        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).check(matches(isDisplayed()))
+
+        testFixture.responseWithSuccessOnlyFirstStrip()
+
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).perform(click())
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_loading))).perform(waitUntilNotDisplayed())
+
+        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_strip))).check(matches(isDisplayed()))
+    }
 
 }

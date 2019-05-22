@@ -16,11 +16,7 @@ class ComicPageAdapter(private val imageLoader: Picasso) : PagedListAdapter<Page
 
     override fun onBindViewHolder(holder: StripViewHolder, position: Int) {
         val page: Page? = getItem(position)
-        if (page != null) {
-            holder.bind(page)
-        } else {
-            holder.showPlaceholder()
-        }
+        holder.bind(page)
     }
 
     companion object {

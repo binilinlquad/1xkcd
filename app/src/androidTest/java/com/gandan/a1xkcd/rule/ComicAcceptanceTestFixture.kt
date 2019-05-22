@@ -68,6 +68,14 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
     }
 
 
+    fun responseWithFailLoadStripImages() {
+        mockWebServer.dispatcher = ComicDispatcher().apply {
+            whenPathContains("/info.0.json")
+                .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
+        }
+    }
+
+
     private fun openTestAsset(filename: String): InputStream {
         return testContext.assets.open(filename)
     }
