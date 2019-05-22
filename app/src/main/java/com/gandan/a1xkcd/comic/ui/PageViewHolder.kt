@@ -87,20 +87,14 @@ class PageViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVie
     private fun loadComicImage(page: Page) {
         imageLoader.load(page.img)
             .showProgressBar()
-            .intoAndHideProgressBar(
-                comicPage
-            )
+            .into(comicPage, SuccessOrFailureHandler())
     }
 
     private fun RequestCreator.showProgressBar(): RequestCreator {
         return this.also { comicLoading.visibility = View.VISIBLE }
     }
 
-    private fun RequestCreator.intoAndHideProgressBar(target: ImageView) {
-        this.into(target, HideProgressBar())
-    }
-
-    inner class HideProgressBar : Callback {
+    inner class SuccessOrFailureHandler : Callback {
         override fun onError(e: Exception?) {
             comicLoading.visibility = View.GONE
             comicRetry.visibility = View.VISIBLE
