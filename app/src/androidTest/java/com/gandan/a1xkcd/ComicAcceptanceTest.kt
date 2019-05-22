@@ -31,7 +31,7 @@ class ComicAcceptanceTest {
         activityRule.launchActivity(null)
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
 
-        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
@@ -45,7 +45,7 @@ class ComicAcceptanceTest {
 
         testFixture.responseWithSuccessOnlyFirstPage()
         onView(withId(R.id.manual_refresh)).perform(click())
-        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
@@ -57,7 +57,7 @@ class ComicAcceptanceTest {
         activityRule.launchActivity(null)
 
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
-        val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
+        val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageRetry(firstComic)).check(matches(isDisplayed()))
 
@@ -79,5 +79,9 @@ class ComicAcceptanceTest {
 
     private fun pageRetry(pageContainerMatcher: Matcher<View>): Matcher<View> {
         return allOf(isDescendantOfA(pageContainerMatcher), withId(R.id.comic_retry))
+    }
+
+    private fun comicContainerAt(pos: Int): Matcher<View> {
+        return RecyclerViewMatcher(R.id.comics).atPosition(pos)
     }
 }
