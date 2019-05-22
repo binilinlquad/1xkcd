@@ -40,14 +40,13 @@ class ComicAcceptanceTest {
     fun given_opening_app_and_refresh_failed__then_user_should_able_reload_whole_pages() {
         testFixture.responseWithFailAll()
         activityRule.launchActivity(null)
-
         onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
-
         testFixture.responseWithSuccessOnlyFirstPage()
+
         onView(withId(R.id.manual_refresh)).perform(click())
+
         val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
-
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
@@ -55,12 +54,10 @@ class ComicAcceptanceTest {
     fun given_opening_app_and_failed_load_one_of_page__then_user_should_able_to_reload_that_page_only() {
         testFixture.responseWithFailLoadPage()
         activityRule.launchActivity(null)
-
         waitComicPagesPopulated()
         val firstComic = comicContainerAt(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageRetry(firstComic)).check(matches(isDisplayed()))
-
         testFixture.responseWithSuccessOnlyFirstPage()
 
         onView(pageRetry(firstComic)).perform(click())
