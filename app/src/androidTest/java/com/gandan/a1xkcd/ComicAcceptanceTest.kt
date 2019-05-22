@@ -33,7 +33,7 @@ class ComicAcceptanceTest {
 
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
+        onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -48,7 +48,7 @@ class ComicAcceptanceTest {
         val firstComic = RecyclerViewMatcher(R.id.comics).atPosition(0)
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
+        onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -66,11 +66,14 @@ class ComicAcceptanceTest {
         onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_retry))).perform(click())
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
-        onView(allOf(isDescendantOfA(firstComic), withId(R.id.comic_page))).check(matches(isDisplayed()))
+        onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
-    private fun pageProgressBar(pageMatcher: Matcher<View>): Matcher<View> {
-        return allOf(isDescendantOfA(pageMatcher), withId(R.id.comic_loading))
+    private fun pageProgressBar(pageContainerMatcher: Matcher<View>): Matcher<View> {
+        return allOf(isDescendantOfA(pageContainerMatcher), withId(R.id.comic_loading))
     }
 
+    private fun pageImage(pageContainerMatcher: Matcher<View>): Matcher<View> {
+        return allOf(isDescendantOfA(pageContainerMatcher), withId(R.id.comic_page))
+    }
 }
