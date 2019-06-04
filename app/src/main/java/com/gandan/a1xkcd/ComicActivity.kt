@@ -12,6 +12,7 @@ import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.util.AppDispatchers.main
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
@@ -64,7 +65,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
     }
 
     override fun onError(error: Throwable) {
-        launch {
+        launch(main) {
             Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
 
             manual_refresh.visibility = View.VISIBLE
@@ -73,7 +74,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
     }
 
     override fun onRefresh() {
-        launch {
+        launch(main) {
             manual_refresh.visibility = View.GONE
             comics.visibility = View.VISIBLE
         }

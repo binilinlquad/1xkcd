@@ -9,6 +9,7 @@ import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.util.AppDispatchers.network
 import kotlinx.coroutines.*
 
 class PageDataSourceFactory(
@@ -37,9 +38,8 @@ class PageDataSource(
 
     @Suppress("DeferredResultUnused")
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Page>) {
-        runBlocking {
-
-            async(Dispatchers.IO) {
+        uiScope.launch {
+            async(network) {
                 try {
                     val latestPage = service.latestPage().await()
                     val totalPages = latestPage.num
@@ -61,14 +61,16 @@ class PageDataSource(
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Page>) {
         uiScope.launch {
-            val num = params.key - 1
-            try {
-                val page = service.at(num).await()
-                callback.onResult(listOf(page))
+            async(network) {
+                val num = params.key - 1
+                try {
+                    val page = service.at(num).await()
+                    callback.onResult(listOf(page))
 
-                Log.i(TAG, "load page $num successfully")
-            } catch (e: Throwable) {
-                Log.e(TAG, "fail loading page $num with reason ${e.message}")
+                    Log.i(TAG, "load page $num successfully")
+                } catch (e: Throwable) {
+                    Log.e(TAG, "fail loading page $num with reason ${e.message}")
+                }
             }
         }
     }
