@@ -1,6 +1,8 @@
 package com.gandan.a1xkcd
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -51,6 +53,23 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         super.onDestroy()
         job.cancelChildren()
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menus, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.menu_refresh -> {
+                refreshComics()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun refreshComics() {
         val pageSourceFactory = PageDataSourceFactory(service, this, this)
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
