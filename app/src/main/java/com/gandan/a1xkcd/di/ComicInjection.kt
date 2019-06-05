@@ -12,6 +12,7 @@ import dagger.Provides
 import dagger.android.AndroidInjectionModule
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 
 
@@ -45,11 +46,16 @@ interface ActivityModule {
 }
 
 @Module
-class ProductionServiceModule : ServiceModule {
+class ProductionServiceModule(private val application: ComicApplication) : ServiceModule {
 
     @Provides
     override fun webClient(): OkHttpClient {
-        return OkHttpClient()
+        val cacheSize = 10L * 1024 * 1024 // 10 MB
+        val localCache = Cache(application.cacheDir, cacheSize)
+
+        return OkHttpClient.Builder()
+            .cache(localCache)
+            .build()
     }
 
     @Provides
