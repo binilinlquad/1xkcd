@@ -9,6 +9,7 @@ import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.util.AppDispatchers.main
 import com.gandan.a1xkcd.util.AppDispatchers.network
 import kotlinx.coroutines.*
 
@@ -45,8 +46,9 @@ class PageDataSource(
                     val totalPages = latestPage.num
 
                     Log.i(TAG, "load latest page successfully")
-                    callback.onResult(listOf(latestPage), 0, totalPages)
-
+                    launch(main) {
+                        callback.onResult(listOf(latestPage), 0, totalPages)
+                    }
                     refreshListener.onRefresh()
 
                 } catch (e: Throwable) {
@@ -65,8 +67,9 @@ class PageDataSource(
                 val num = params.key - 1
                 try {
                     val page = service.at(num).await()
-                    callback.onResult(listOf(page))
-
+                    launch(main) {
+                        callback.onResult(listOf(page))
+                    }
                     Log.i(TAG, "load page $num successfully")
                 } catch (e: Throwable) {
                     Log.e(TAG, "fail loading page $num with reason ${e.message}")
