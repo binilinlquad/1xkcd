@@ -32,13 +32,11 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
-    private lateinit var pagedPageAdapter: ComicPageAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
 
-        pagedPageAdapter = ComicPageAdapter(imageDownloader)
+        val pagedPageAdapter = ComicPageAdapter(imageDownloader)
         comics.layoutManager = LinearLayoutManager(this)
         comics.adapter = pagedPageAdapter
 
@@ -53,11 +51,13 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         super.onDestroy()
         job.cancelChildren()
     }
-
     private fun refreshComics() {
         val pageSourceFactory = PageDataSourceFactory(service, this, this)
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
             .build()
+        val pagedPageAdapter = ComicPageAdapter(imageDownloader)
+        comics.swapAdapter(pagedPageAdapter, false)
+
         livePages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
             comics_refresher.isRefreshing = false
@@ -79,8 +79,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
             comics.visibility = View.VISIBLE
         }
     }
-
-
 }
 
 
