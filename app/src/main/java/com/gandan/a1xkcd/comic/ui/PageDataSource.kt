@@ -9,9 +9,10 @@ import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
-import com.gandan.a1xkcd.util.AppDispatchers.main
 import com.gandan.a1xkcd.util.AppDispatchers.network
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PageDataSourceFactory(
     private val service: XkcdService,
@@ -37,43 +38,31 @@ class PageDataSource(
         private val TAG = PageDataSource::class.java.simpleName
     }
 
-    @Suppress("DeferredResultUnused")
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Page>) {
         uiScope.launch {
-            async(network) {
-                try {
-                    val latestPage = service.latestPage().await()
-                    val totalPages = latestPage.num
+            try {
+                val latestPage = loadLatestPage()
+                val totalPages = latestPage.num
 
-                    Log.i(TAG, "load latest page successfully")
-                    launch(main) {
-                        callback.onResult(listOf(latestPage), 0, totalPages)
-                    }
-                    refreshListener.onRefresh()
-
-                } catch (e: Throwable) {
-                    Log.i(TAG, "fail loading latest page with reason ${e.message}")
-
-                    refreshListener.onError(e)
-                }
-
+                Log.i(TAG, "load latest page successfully")
+                callback.onResult(listOf(latestPage), 0, totalPages)
+                refreshListener.onRefresh()
+            } catch (e: Throwable) {
+                Log.i(TAG, "fail loading latest page with reason ${e.message}")
+                refreshListener.onError(e)
             }
         }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Page>) {
         uiScope.launch {
-            async(network) {
-                val num = params.key - 1
-                try {
-                    val page = service.at(num).await()
-                    launch(main) {
-                        callback.onResult(listOf(page))
-                    }
-                    Log.i(TAG, "load page $num successfully")
-                } catch (e: Throwable) {
-                    Log.e(TAG, "fail loading page $num with reason ${e.message}")
-                }
+            val num = params.key - 1
+            try {
+                val page = loadPageAt(num)
+                callback.onResult(listOf(page))
+                Log.i(TAG, "load page $num successfully")
+            } catch (e: Throwable) {
+                Log.e(TAG, "fail loading page $num with reason ${e.message}")
             }
         }
     }
@@ -82,5 +71,16 @@ class PageDataSource(
 
     override fun getKey(item: Page): Int = item.num
 
+    private suspend fun loadLatestPage(): Page {
+        return withContext(network) {
+            service.latestPage().await()
+        }
+    }
+
+    private suspend fun loadPageAt(pageNum: Int): Page {
+        return withContext(network) {
+            service.at(pageNum).await()
+        }
+    }
 }
 
