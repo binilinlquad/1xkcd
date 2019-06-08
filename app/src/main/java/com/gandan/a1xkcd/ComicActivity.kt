@@ -38,14 +38,10 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
 
-        val pagedPageAdapter = ComicPageAdapter(imageDownloader)
-        comics.layoutManager = LinearLayoutManager(this)
-        comics.adapter = pagedPageAdapter
+        comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
+        manual_refresh.setOnClickListener { resetPagesAndRefresh() }
 
-        comics_refresher.setOnRefreshListener { refreshComics() }
-        manual_refresh.setOnClickListener { refreshComics() }
-
-        refreshComics()
+        resetPagesAndRefresh()
     }
 
 
@@ -63,17 +59,19 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_refresh -> {
-                refreshComics()
+                resetPagesAndRefresh()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun refreshComics() {
+    private fun resetPagesAndRefresh() {
         val pageSourceFactory = PageDataSourceFactory(service, this, this)
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
             .build()
+
+        comics.layoutManager = LinearLayoutManager(this)
         val pagedPageAdapter = ComicPageAdapter(imageDownloader)
         comics.swapAdapter(pagedPageAdapter, false)
 
