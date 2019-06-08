@@ -73,13 +73,13 @@ class PageDataSource(
 
     private suspend fun loadLatestPage(): Page {
         return withContext(network) {
-            service.latestPage().await()
+            service.latestPage()
         }
     }
 
     private suspend fun loadPageAt(pageNum: Int): Page {
         return withContext(network) {
-            service.at(pageNum).await()
+            service.at(pageNum)
         }
     }
 }

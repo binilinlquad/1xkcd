@@ -2,20 +2,18 @@ package com.gandan.a1xkcd.service
 
 import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
-import java.util.concurrent.Executors
 
 interface XkcdService {
 
     @GET("info.0.json")
-    fun latestPage(): Call<Page>
+    suspend fun latestPage(): Page
 
     @GET("{pos}/info.0.json")
-    fun at(@Path("pos") pos: Int): Call<Page>
+    suspend fun at(@Path("pos") pos: Int): Page
 
 }
 
