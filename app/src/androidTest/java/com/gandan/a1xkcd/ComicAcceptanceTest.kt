@@ -2,9 +2,11 @@ package com.gandan.a1xkcd
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
 import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
@@ -63,6 +65,23 @@ class ComicAcceptanceTest {
         onView(pageRetry(firstComic)).perform(click())
         onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
+        onView(pageImage(firstComic)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun given_click_refresh_menu__then_user_should_able_to_reload_whole_pages() {
+        testFixture.responseWithFailAll()
+        activityRule.launchActivity(null)
+        onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
+
+        testFixture.responseWithSuccessOnlyFirstPage()
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        onView(withText(R.string.menu_refresh)).perform(click())
+
+        waitComicPagesPopulated()
+
+        val firstComic = comicContainerAt(0)
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
