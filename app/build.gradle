@@ -60,7 +60,7 @@ def versions = [
         runner : "1.1.1",
         orchestrator : "1.1.1",
         rules : "1.1.1",
-        espresso_core : "3.1.1",
+        espresso : "3.1.1",
         okhttp_tls : "3.13.1",
         okhttp_idling_resource : "1.0.0",
 
@@ -102,8 +102,8 @@ dependencies {
 
     androidTestImplementation "androidx.test:runner:$versions.runner"
     androidTestImplementation "androidx.test:rules:$versions.runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso_core"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$versions.espresso_core"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$versions.espresso"
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
