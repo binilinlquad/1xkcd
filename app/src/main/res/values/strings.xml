@@ -5,4 +5,5 @@
   <string name="manual_refresh_guide">Touch this for Refresh</string>
   <string name="menu_refresh">Refresh</string>
   <string name="menu_goto">Goto</string>
+  <string name="goto_disable">Refresh is happening. Please wait.</string>
 </resources>

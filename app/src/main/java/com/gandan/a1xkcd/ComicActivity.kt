@@ -1,12 +1,10 @@
 package com.gandan.a1xkcd
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
@@ -16,6 +14,9 @@ import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
+import com.gandan.a1xkcd.ui.GoToButtonHandler
+import com.gandan.a1xkcd.ui.PageGoToButtonHandler
 import com.gandan.a1xkcd.util.AppDispatchers.main
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerAppCompatActivity
@@ -34,7 +35,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
 
     private val job = Job()
 
-    private var totalPages: Int? = null
+    private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -68,18 +69,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
                 true
             }
             R.id.menu_goto -> {
-                totalPages?.let {
-                    val pages = (1..it).map { "$it" }.toTypedArray()
-                    AlertDialog.Builder(this@ComicActivity)
-                        .setItems(pages) { dialog: DialogInterface, which: Int ->
-                            comics.scrollToPosition(which)
-                            dialog.dismiss()
-                        }
-                        .show()
-                } ?: AlertDialog.Builder(this@ComicActivity)
-                    .setMessage("Refresh is happening. Please wait.")
-                    .show()
-
+                goToButtonHandler.onClick()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -98,6 +88,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         livePages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
             comics_refresher.isRefreshing = false
+            goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
         })
     }
 
@@ -107,6 +98,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
 
             manual_refresh.visibility = View.VISIBLE
             comics.visibility = View.GONE
+            goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
         }
     }
 
@@ -114,7 +106,11 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         launch(main) {
             manual_refresh.visibility = View.GONE
             comics.visibility = View.VISIBLE
-            this@ComicActivity.totalPages = totalPages
+            goToButtonHandler = PageGoToButtonHandler(
+                this@ComicActivity,
+                totalPages,
+                comics::scrollToPosition
+            )
         }
     }
 }
