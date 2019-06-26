@@ -1,10 +1,12 @@
 package com.gandan.a1xkcd
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
@@ -31,6 +33,9 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
     lateinit var imageDownloader: Picasso
 
     private val job = Job()
+
+    private var totalPages: Int? = null
+
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
@@ -62,6 +67,21 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
                 resetPagesAndRefresh()
                 true
             }
+            R.id.menu_goto -> {
+                totalPages?.let {
+                    val pages = (1..it).map { "$it" }.toTypedArray()
+                    AlertDialog.Builder(this@ComicActivity)
+                        .setItems(pages) { dialog: DialogInterface, which: Int ->
+                            comics.scrollToPosition(which)
+                            dialog.dismiss()
+                        }
+                        .show()
+                } ?: AlertDialog.Builder(this@ComicActivity)
+                    .setMessage("Refresh is happening. Please wait.")
+                    .show()
+
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -90,10 +110,11 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
         }
     }
 
-    override fun onRefresh() {
+    override fun onRefreshed(totalPages: Int) {
         launch(main) {
             manual_refresh.visibility = View.GONE
             comics.visibility = View.VISIBLE
+            this@ComicActivity.totalPages = totalPages
         }
     }
 }
@@ -102,5 +123,5 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope, RefreshListener
 interface RefreshListener {
     fun onError(error: Throwable)
 
-    fun onRefresh()
+    fun onRefreshed(totalPages: Int)
 }

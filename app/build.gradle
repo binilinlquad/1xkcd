@@ -103,6 +103,8 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$versions.runner"
     androidTestImplementation "androidx.test:rules:$versions.runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso_core"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$versions.espresso_core"
+
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
     androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$versions.okhttp_tls"

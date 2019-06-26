@@ -31,6 +31,8 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
     private val idlingRegistry
         get() = IdlingRegistry.getInstance()
 
+    val totalSamplePages = 2110
+
     private fun setUp() {
         idlingRegistry.register(okHttp3IdlingResource)
     }
@@ -84,7 +86,7 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
     private fun sampleLatestPage(imageUrl: String): String {
         return """
                 {"month": "2",
-                "num": 2110,
+                "num": $totalSamplePages,
                 "link": "",
                 "year": "2019",
                 "news": "",

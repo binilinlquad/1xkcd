@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
-import await
 import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
@@ -46,7 +45,7 @@ class PageDataSource(
 
                 Log.i(TAG, "load latest page successfully")
                 callback.onResult(listOf(latestPage), 0, totalPages)
-                refreshListener.onRefresh()
+                refreshListener.onRefreshed(totalPages)
             } catch (e: Throwable) {
                 Log.i(TAG, "fail loading latest page with reason ${e.message}")
                 refreshListener.onError(e)

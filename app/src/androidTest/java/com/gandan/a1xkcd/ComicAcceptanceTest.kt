@@ -1,8 +1,7 @@
 package com.gandan.a1xkcd
 
 import android.view.View
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -13,7 +12,8 @@ import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.gandan.a1xkcd.util.waitUntilNotDisplayed
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.*
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -85,6 +85,27 @@ class ComicAcceptanceTest {
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
+    @Ignore("Investigate RecycleViewMatcher cannot find target items")
+    @Test
+    fun given_click_goto__then_user_should_able_choose_other_page() {
+        val totalPages = testFixture.totalSamplePages
+        val targetPage = 2009   // hardcoded for simplify setup
+        testFixture.responseWithSuccessOnlyFirstPage()
+
+        activityRule.launchActivity(null)
+        onView(withText(R.string.menu_goto)).perform(click())
+
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`("$targetPage")))
+            .perform(click())
+
+        waitComicPagesPopulated()
+
+        // TODO: it will always fail
+        val targetComic = comicContainerAt(5) // hardcoded for simplify setup
+        onView(pageImage(targetComic)).check(matches(isDisplayed()))
+    }
+
+    //region test utilities
     private fun waitComicPagesPopulated() {
         onView(withId(R.id.comics)).perform(WaitUntilAdapterHasItems())
     }
@@ -104,4 +125,5 @@ class ComicAcceptanceTest {
     private fun comicContainerAt(pos: Int): Matcher<View> {
         return RecyclerViewMatcher(R.id.comics).atPosition(pos)
     }
+    //endregion
 }
