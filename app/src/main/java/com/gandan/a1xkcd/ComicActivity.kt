@@ -19,7 +19,6 @@ import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
 import com.gandan.a1xkcd.util.AppDispatchers.main
-import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.*
@@ -34,9 +33,6 @@ class ComicActivity : DaggerAppCompatActivity(),
 
     @Inject
     lateinit var service: XkcdService
-
-    @Inject
-    lateinit var imageDownloader: Picasso
 
     private val job = Job()
 
@@ -102,7 +98,7 @@ class ComicActivity : DaggerAppCompatActivity(),
             .build()
 
         comics.layoutManager = LinearLayoutManager(this)
-        val pagedPageAdapter = ComicPageAdapter(imageDownloader)
+        val pagedPageAdapter = ComicPageAdapter()
         comics.swapAdapter(pagedPageAdapter, false)
 
         livePages.observe(this, Observer { pagedList ->

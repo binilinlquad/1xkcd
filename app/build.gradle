@@ -51,11 +51,11 @@ def versions = [
         retrofit: "2.6.0",
         gson: "2.8.5",
         converter_gson : "2.4.0",
-        picasso : "2.71828",
         photoview : "2.2.0",
         recyclerview : "1.0.0",
         cardview : "1.0.0",
         lifecycle_extension : "1.1.1",
+        coil: "0.7.0",
 
         mockito_kotlin : "2.1.0",
         mockwebserver : "3.13.1",
@@ -87,8 +87,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
     implementation "com.google.code.gson:gson:$versions.gson"
 
-    implementation "com.squareup.picasso:picasso:$versions.picasso"
     implementation "com.github.chrisbanes:PhotoView:$versions.photoview"
+    implementation "io.coil-kt:coil:$versions.coil"
 
     // dagger
     implementation "com.google.dagger:dagger:$versions.dagger"

@@ -5,20 +5,22 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.gandan.a1xkcd.R
 import com.gandan.a1xkcd.service.Page
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.RequestCreator
 
-class PageViewHolder(root: View, private val imageLoader: Picasso) : RecyclerView.ViewHolder(root) {
+class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     private val comicTitle: TextView = root.findViewById(R.id.comic_title)
     private val comicPage: ImageView = root.findViewById(R.id.comic_page)
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
     private val comicLoading: ProgressBar = root.findViewById(R.id.comic_loading)
     private val comicRetry: TextView = root.findViewById(R.id.comic_retry)
 
-    private val titlePlaceHolder: String by lazy(LazyThreadSafetyMode.NONE) { root.context.getString(R.string.getting_comic_title_placeholder) }
+    private val titlePlaceHolder: String by lazy(LazyThreadSafetyMode.NONE) {
+        root.context.getString(
+            R.string.getting_comic_title_placeholder
+        )
+    }
     private var animator: PageAnimator? = null
     private var page: Page? = null
 
@@ -85,24 +87,18 @@ class PageViewHolder(root: View, private val imageLoader: Picasso) : RecyclerVie
     }
 
     private fun loadComicImage(page: Page) {
-        imageLoader.load(page.img)
-            .showProgressBar()
-            .into(comicPage, SuccessOrFailureHandler())
-    }
-
-    private fun RequestCreator.showProgressBar(): RequestCreator {
-        return this.also { comicLoading.visibility = View.VISIBLE }
-    }
-
-    inner class SuccessOrFailureHandler : Callback {
-        override fun onError(e: Exception?) {
-            comicLoading.visibility = View.GONE
-            comicRetry.visibility = View.VISIBLE
-        }
-
-        override fun onSuccess() {
-            comicLoading.visibility = View.GONE
-            comicRetry.visibility = View.GONE
+        comicPage.load(page.img) {
+            this.listener(
+                onStart = { comicLoading.visibility = View.VISIBLE },
+                onSuccess = { _, _ ->
+                    comicLoading.visibility = View.GONE
+                    comicRetry.visibility = View.GONE
+                },
+                onError = { _, _ ->
+                    comicLoading.visibility = View.GONE
+                    comicRetry.visibility = View.VISIBLE
+                }
+            )
         }
     }
 }

@@ -4,8 +4,6 @@ import com.gandan.a1xkcd.ComicActivity
 import com.gandan.a1xkcd.ComicApplication
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.service.createXkcdService
-import com.squareup.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -25,17 +23,10 @@ import okhttp3.OkHttpClient
 )
 interface AppComponent {
     fun inject(app: ComicApplication)
-
 }
 
 @Module
-class AppModule(private val application: ComicApplication) {
-
-    @Provides
-    fun imageDownloader(okHttpClient: OkHttpClient): Picasso {
-        return Picasso.Builder(application).downloader(OkHttp3Downloader(okHttpClient)).build()
-    }
-}
+class AppModule
 
 @Module
 interface ActivityModule {

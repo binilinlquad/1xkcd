@@ -6,12 +6,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.gandan.a1xkcd.R
 import com.gandan.a1xkcd.service.Page
-import com.squareup.picasso.Picasso
 
-class ComicPageAdapter(private val imageLoader: Picasso) : PagedListAdapter<Page, PageViewHolder>(diffUtil) {
+class ComicPageAdapter : PagedListAdapter<Page, PageViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_page, parent, false)
-        return PageViewHolder(itemView, imageLoader)
+        return PageViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
