@@ -11,6 +11,7 @@ import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
 import okhttp3.OkHttpClient
 import okhttp3.tls.HandshakeCertificates
+import java.util.concurrent.*
 
 
 @Component(
@@ -30,9 +31,13 @@ interface TestAppComponent : AppComponent {
 class FakeServiceModule : ServiceModule {
     @Provides
     override fun webClient(): OkHttpClient {
-        val clientCertificates = HandshakeCertificates.Builder()
-            .addTrustedCertificate(TestCertificate.localhostCertificate.certificate())
-            .build();
+        val futureTask: Future<HandshakeCertificates> =
+            Executors.newSingleThreadExecutor().submit<HandshakeCertificates> {
+                HandshakeCertificates.Builder()
+                    .addTrustedCertificate(TestCertificate.localhostCertificate.certificate())
+                    .build();
+            }
+        val clientCertificates = futureTask.get()
         return OkHttpClient.Builder()
             .sslSocketFactory(clientCertificates.sslSocketFactory(), clientCertificates.trustManager())
             .build()
