@@ -12,7 +12,6 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
-import com.gandan.a1xkcd.experiment.ComicMain
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
@@ -27,9 +26,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ComicActivity : DaggerAppCompatActivity(),
     CoroutineScope,
-    RefreshListener,
-    ComicMain.View,
-    ComicMain.Screen {
+    RefreshListener {
 
     @Inject
     lateinit var service: XkcdService
@@ -37,9 +34,6 @@ class ComicActivity : DaggerAppCompatActivity(),
     private val job = Job()
 
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
-
-    private val mainApp = ComicMain()
-    private lateinit var listener: ComicMain.Screen.ScreenEventListener
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -51,19 +45,14 @@ class ComicActivity : DaggerAppCompatActivity(),
         comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
         manual_refresh.setOnClickListener { resetPagesAndRefresh() }
 
-        mainApp.bind(this, this)
     }
 
     override fun onResume() {
         super.onResume()
-        listener.onEvent(ComicMain.Screen.Event.STARTED)
+        showComics()
     }
 
-    override fun onBind(listener: ComicMain.Screen.ScreenEventListener) {
-        this.listener = listener
-    }
-
-    override fun showComics() {
+    fun showComics() {
         resetPagesAndRefresh()
     }
 
