@@ -40,11 +40,7 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
             comicPage.apply {
                 contentDescription = page.alt
-
-                setOnClickListener {
-                    toggleComitPageAndAltText()
-                }
-
+                setOnClickListener { toggleComitPageAndAltText() }
                 loadComicImage(this@run)
             }
 
