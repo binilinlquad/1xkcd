@@ -17,10 +17,13 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
-import com.gandan.a1xkcd.util.AppDispatchers.main
+import com.gandan.a1xkcd.util.AppDispatchers
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -31,12 +34,12 @@ class ComicActivity : DaggerAppCompatActivity(),
     @Inject
     lateinit var service: XkcdService
 
-    private val job = Job()
-
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
 
+    private val job = Job()
+
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = job + AppDispatchers.main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,6 @@ class ComicActivity : DaggerAppCompatActivity(),
 
         comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
         manual_refresh.setOnClickListener { resetPagesAndRefresh() }
-
     }
 
     override fun onResume() {
@@ -57,8 +59,8 @@ class ComicActivity : DaggerAppCompatActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         job.cancelChildren()
+        super.onDestroy()
     }
 
 
@@ -98,7 +100,7 @@ class ComicActivity : DaggerAppCompatActivity(),
     }
 
     override fun onError(error: Throwable) {
-        launch(main) {
+        launch(coroutineContext) {
             Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
 
             manual_refresh.visibility = View.VISIBLE
@@ -108,7 +110,7 @@ class ComicActivity : DaggerAppCompatActivity(),
     }
 
     override fun onRefreshed(totalPages: Int) {
-        launch(main) {
+        launch(coroutineContext) {
             manual_refresh.visibility = View.GONE
             comics.visibility = View.VISIBLE
             goToButtonHandler = PageGoToButtonHandler(
