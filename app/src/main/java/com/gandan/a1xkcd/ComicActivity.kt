@@ -17,6 +17,7 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
+import com.gandan.a1xkcd.ui.RefreshListener
 import com.gandan.a1xkcd.util.AppDispatchers
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
@@ -28,13 +29,15 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class ComicActivity : DaggerAppCompatActivity(),
-    CoroutineScope,
-    RefreshListener {
+    CoroutineScope {
 
     @Inject
     lateinit var service: XkcdService
 
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
+
+    private var refreshListener: RefreshListener =
+        RefreshListener.create({ showPages(it) }, { showEmptyScreen(it) })
 
     private val job = Job()
 
@@ -83,8 +86,9 @@ class ComicActivity : DaggerAppCompatActivity(),
         }
     }
 
+
     private fun resetPagesAndRefresh() {
-        val pageSourceFactory = PageDataSourceFactory(service, this, this)
+        val pageSourceFactory = PageDataSourceFactory(service, this, refreshListener)
         val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
             .build()
 
@@ -99,7 +103,7 @@ class ComicActivity : DaggerAppCompatActivity(),
         })
     }
 
-    override fun onError(error: Throwable) {
+    private fun showEmptyScreen(error: Throwable) {
         launch(coroutineContext) {
             Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
 
@@ -109,22 +113,24 @@ class ComicActivity : DaggerAppCompatActivity(),
         }
     }
 
-    override fun onRefreshed(totalPages: Int) {
+    private fun showPages(totalPages: Int) {
         launch(coroutineContext) {
-            manual_refresh.visibility = View.GONE
-            comics.visibility = View.VISIBLE
-            goToButtonHandler = PageGoToButtonHandler(
-                this@ComicActivity,
-                totalPages,
-                comics::scrollToPosition
-            )
+            showComicPages()
+            enableGotoButton(totalPages)
         }
     }
-}
 
+    private fun enableGotoButton(totalPages: Int) {
+        goToButtonHandler = PageGoToButtonHandler(
+            this@ComicActivity,
+            totalPages,
+            comics::scrollToPosition
+        )
+    }
 
-interface RefreshListener {
-    fun onError(error: Throwable)
+    private fun showComicPages() {
+        manual_refresh.visibility = View.GONE
+        comics.visibility = View.VISIBLE
+    }
 
-    fun onRefreshed(totalPages: Int)
 }

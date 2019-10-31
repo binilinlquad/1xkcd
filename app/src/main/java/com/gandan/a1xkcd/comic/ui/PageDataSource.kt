@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
-import com.gandan.a1xkcd.ComicActivity
-import com.gandan.a1xkcd.RefreshListener
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.ui.RefreshListener
 import com.gandan.a1xkcd.util.AppDispatchers.network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -16,11 +15,11 @@ import kotlinx.coroutines.withContext
 class PageDataSourceFactory(
     private val service: XkcdService,
     private val uiScope: CoroutineScope,
-    private val activity: ComicActivity
+    private val refreshListener: RefreshListener
 ) : DataSource.Factory<Int, Page>() {
     private val sourceLiveData = MutableLiveData<PageDataSource>()
     override fun create(): DataSource<Int, Page> {
-        val source = PageDataSource(service, uiScope, activity)
+        val source = PageDataSource(service, uiScope, refreshListener)
         sourceLiveData.postValue(source)
         return source
     }
