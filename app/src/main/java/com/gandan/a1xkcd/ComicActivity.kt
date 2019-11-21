@@ -28,9 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ComicActivity : DaggerAppCompatActivity(),
-    CoroutineScope {
-
+class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     @Inject
     lateinit var service: XkcdService
 
