@@ -21,8 +21,8 @@ open class ComicApplication : Application(), HasActivityInjector {
     lateinit var okHttp3Client: OkHttpClient
 
     override fun onCreate() {
-        super.onCreate()
         applicationInjector().inject(this)
+        super.onCreate()
         Coil.setDefaultImageLoader(
             ImageLoaderBuilder(this)
                 .okHttpClient(okHttp3Client)
