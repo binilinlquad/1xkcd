@@ -52,4 +52,6 @@ object Libs {
 
         const val idlingResource = "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
     }
+
+    const val gson = "com.google.code.gson:gson:2.8.5"
 }
