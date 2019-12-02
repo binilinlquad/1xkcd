@@ -14,6 +14,8 @@ object Libs {
             const val rules = "androidx.test:rules:1.1.1"
             const val espressoCore = "androidx.test.espresso:espresso-core:3.1.1"
             const val espressoContrib = "androidx.test.espresso:espresso-contrib:3.1.1"
+
+            const val orchestrator = "androidx.test:orchestrator:1.1.1"
         }
     }
 

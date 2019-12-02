@@ -56,7 +56,6 @@ def versions = [
         mockwebserver : "3.13.1",
         junit : "4.12",
         runner : "1.1.1",
-        orchestrator : "1.1.1",
         rules : "1.1.1",
         espresso : "3.1.1",
         okhttp_tls : "3.13.1",
@@ -108,7 +107,7 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$versions.okhttp_tls"
     androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$versions.okhttp_idling_resource"
 
-    androidTestUtil "androidx.test:orchestrator:$versions.orchestrator"
+    androidTestUtil Libs.AndroidX.Test.orchestrator
 
     //endregion
 
