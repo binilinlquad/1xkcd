@@ -41,10 +41,6 @@ android {
     }
 }
 
-def versions = [
-        mockito_kotlin : "2.1.0",
-]
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -84,7 +80,7 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.Espresso.core
     androidTestImplementation Libs.AndroidX.Test.Espresso.contrib
 
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
+    androidTestImplementation Libs.mockitoKotlin
     androidTestImplementation Libs.OkHttp.mockWebServer
     androidTestImplementation Libs.OkHttp.tls
     androidTestImplementation Libs.OkHttp.idlingResource
@@ -96,7 +92,7 @@ dependencies {
     //region test
 
     testImplementation Libs.junit
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
+    testImplementation Libs.mockitoKotlin
     testImplementation Libs.OkHttp.mockWebServer
     testImplementation Libs.Coroutine.test
 

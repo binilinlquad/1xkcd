@@ -62,4 +62,6 @@ object Libs {
     }
 
     const val photoView = "com.github.chrisbanes:PhotoView:2.2.0"
+
+    const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 }
