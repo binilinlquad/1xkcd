@@ -55,9 +55,6 @@ def versions = [
         mockito_kotlin : "2.1.0",
         mockwebserver : "3.13.1",
         junit : "4.12",
-        runner : "1.1.1",
-        rules : "1.1.1",
-        espresso : "3.1.1",
         okhttp_tls : "3.13.1",
         okhttp_idling_resource : "1.0.0",
 
