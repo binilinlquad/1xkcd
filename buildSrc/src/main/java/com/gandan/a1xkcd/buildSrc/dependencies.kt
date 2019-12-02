@@ -43,4 +43,13 @@ object Libs {
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
+
+    object OkHttp {
+        private const val version = "3.13.1"
+        const val core = "com.squareup.okhttp3:okhttp:$version"
+        const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
+        const val tls = "com.squareup.okhttp3:okhttp-tls:$version"
+
+        const val idlingResource = "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
+    }
 }

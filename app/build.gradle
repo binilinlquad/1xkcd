@@ -42,18 +42,11 @@ android {
 }
 
 def versions = [
-        // app
-        okhttp: "3.13.1",
         retrofit: "2.6.0",
         gson: "2.8.5",
         converter_gson : "2.4.0",
         photoview : "2.2.0",
-
         mockito_kotlin : "2.1.0",
-        mockwebserver : "3.13.1",
-        okhttp_tls : "3.13.1",
-        okhttp_idling_resource : "1.0.0",
-
 ]
 
 dependencies {
@@ -69,7 +62,7 @@ dependencies {
     implementation Libs.AndroidX.lifecyleExtension
     implementation Libs.AndroidX.pagingRuntime
 
-    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    implementation Libs.OkHttp.core
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
     implementation "com.google.code.gson:gson:$versions.gson"
@@ -96,9 +89,9 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.Espresso.contrib
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
-    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
-    androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$versions.okhttp_tls"
-    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$versions.okhttp_idling_resource"
+    androidTestImplementation Libs.OkHttp.mockWebServer
+    androidTestImplementation Libs.OkHttp.tls
+    androidTestImplementation Libs.OkHttp.idlingResource
 
     androidTestUtil Libs.AndroidX.Test.orchestrator
 
@@ -108,7 +101,7 @@ dependencies {
 
     testImplementation Libs.junit
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
-    testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
+    testImplementation Libs.OkHttp.mockWebServer
     testImplementation Libs.Coroutine.test
 
     //endregion test
