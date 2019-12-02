@@ -1,4 +1,4 @@
-import com.gandan.a1xkcd.buildSrc.*
+import com.gandan.a1xkcd.buildSrc.AndroidX
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -99,10 +99,10 @@ dependencies {
     kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
     kaptAndroidTest "com.google.dagger:dagger-android-processor:$versions.dagger"
 
-    androidTestImplementation "androidx.test:runner:$versions.runner"
-    androidTestImplementation "androidx.test:rules:$versions.runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$versions.espresso"
+    androidTestImplementation AndroidX.Test.runner
+    androidTestImplementation AndroidX.Test.rules
+    androidTestImplementation AndroidX.Test.espressoCore
+    androidTestImplementation AndroidX.Test.espressoContrib
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
