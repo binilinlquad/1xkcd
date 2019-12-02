@@ -42,7 +42,6 @@ android {
 }
 
 def versions = [
-        photoview : "2.2.0",
         mockito_kotlin : "2.1.0",
 ]
 
@@ -64,7 +63,7 @@ dependencies {
     implementation Libs.Retrofit.convertGson
     implementation Libs.gson
 
-    implementation "com.github.chrisbanes:PhotoView:$versions.photoview"
+    implementation Libs.photoView
     implementation Libs.coil
 
     // dagger

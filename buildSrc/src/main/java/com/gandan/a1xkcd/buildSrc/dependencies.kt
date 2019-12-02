@@ -60,4 +60,6 @@ object Libs {
         const val core = "com.squareup.retrofit2:retrofit:$version"
         const val convertGson = "com.squareup.retrofit2:converter-gson:$version"
     }
+
+    const val photoView = "com.github.chrisbanes:PhotoView:2.2.0"
 }
