@@ -96,8 +96,8 @@ dependencies {
 
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.rules
-    androidTestImplementation Libs.AndroidX.Test.espressoCore
-    androidTestImplementation Libs.AndroidX.Test.espressoContrib
+    androidTestImplementation Libs.AndroidX.Test.Espresso.core
+    androidTestImplementation Libs.AndroidX.Test.Espresso.contrib
 
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"

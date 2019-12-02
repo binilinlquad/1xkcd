@@ -10,20 +10,26 @@ object Libs {
         const val pagingRuntime = "androidx.paging:paging-runtime-ktx:2.1.0"
 
         object Test {
-            const val runner = "androidx.test:runner:1.1.1"
-            const val rules = "androidx.test:rules:1.1.1"
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.1.1"
-            const val espressoContrib = "androidx.test.espresso:espresso-contrib:3.1.1"
+            private const val version = "1.1.1"
+            const val runner = "androidx.test:runner:$version"
+            const val rules = "androidx.test:rules:$version"
+            const val orchestrator = "androidx.test:orchestrator:$version"
 
-            const val orchestrator = "androidx.test:orchestrator:1.1.1"
+            object Espresso {
+                private const val version = "3.1.1"
+                const val core = "androidx.test.espresso:espresso-core:$version"
+                const val contrib = "androidx.test.espresso:espresso-contrib:$version"
+            }
+
         }
     }
 
     object Dagger {
-        const val core = "com.google.dagger:dagger:2.21"
-        const val android = "com.google.dagger:dagger-android:2.21"
-        const val androidSupport = "com.google.dagger:dagger-android-support:2.21"
-        const val compiler = "com.google.dagger:dagger-compiler:2.21"
-        const val processor = "com.google.dagger:dagger-android-processor:2.21"
+        private const val version = "2.21"
+        const val core = "com.google.dagger:dagger:$version"
+        const val android = "com.google.dagger:dagger-android:$version"
+        const val androidSupport = "com.google.dagger:dagger-android-support:$version"
+        const val compiler = "com.google.dagger:dagger-compiler:$version"
+        const val processor = "com.google.dagger:dagger-android-processor:$version"
     }
 }
