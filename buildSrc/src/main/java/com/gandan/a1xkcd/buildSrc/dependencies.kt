@@ -32,4 +32,8 @@ object Libs {
         const val compiler = "com.google.dagger:dagger-compiler:$version"
         const val processor = "com.google.dagger:dagger-android-processor:$version"
     }
+
+    const val coil = "io.coil-kt:coil:0.7.0"
+
+    const val junit = "junit:junit:4.12"
 }

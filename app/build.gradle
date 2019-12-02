@@ -50,11 +50,9 @@ def versions = [
         gson: "2.8.5",
         converter_gson : "2.4.0",
         photoview : "2.2.0",
-        coil: "0.7.0",
 
         mockito_kotlin : "2.1.0",
         mockwebserver : "3.13.1",
-        junit : "4.12",
         okhttp_tls : "3.13.1",
         okhttp_idling_resource : "1.0.0",
 
@@ -79,7 +77,7 @@ dependencies {
     implementation "com.google.code.gson:gson:$versions.gson"
 
     implementation "com.github.chrisbanes:PhotoView:$versions.photoview"
-    implementation "io.coil-kt:coil:$versions.coil"
+    implementation Libs.coil
 
     // dagger
     implementation Libs.Dagger.core
@@ -110,7 +108,7 @@ dependencies {
 
     //region test
 
-    testImplementation "junit:junit:$versions.junit"
+    testImplementation Libs.junit
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutine"
