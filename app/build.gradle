@@ -43,7 +43,6 @@ android {
 
 def versions = [
         // app
-        coroutine: "1.2.1",
         okhttp: "3.13.1",
         retrofit: "2.6.0",
         gson: "2.8.5",
@@ -60,8 +59,8 @@ def versions = [
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutine"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutine"
+    implementation Libs.Coroutine.core
+    implementation Libs.Coroutine.android
 
     implementation Libs.AndroidX.appCompat
     implementation Libs.AndroidX.constraintLayout
@@ -110,7 +109,7 @@ dependencies {
     testImplementation Libs.junit
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito_kotlin"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutine"
+    testImplementation Libs.Coroutine.test
 
     //endregion test
 

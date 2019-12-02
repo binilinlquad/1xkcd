@@ -36,4 +36,11 @@ object Libs {
     const val coil = "io.coil-kt:coil:0.7.0"
 
     const val junit = "junit:junit:4.12"
+
+    object Coroutine {
+        private const val version = "1.2.1"
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+    }
 }
