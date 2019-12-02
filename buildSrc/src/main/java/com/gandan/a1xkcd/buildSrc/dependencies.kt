@@ -54,4 +54,10 @@ object Libs {
     }
 
     const val gson = "com.google.code.gson:gson:2.8.5"
+    
+    object Retrofit {
+        private const val version = "2.6.2"
+        const val core = "com.squareup.retrofit2:retrofit:$version"
+        const val convertGson = "com.squareup.retrofit2:converter-gson:$version"
+    }
 }

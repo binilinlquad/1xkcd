@@ -42,8 +42,6 @@ android {
 }
 
 def versions = [
-        retrofit: "2.6.0",
-        converter_gson : "2.4.0",
         photoview : "2.2.0",
         mockito_kotlin : "2.1.0",
 ]
@@ -62,8 +60,8 @@ dependencies {
     implementation Libs.AndroidX.pagingRuntime
 
     implementation Libs.OkHttp.core
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$versions.converter_gson"
+    implementation Libs.Retrofit.core
+    implementation Libs.Retrofit.convertGson
     implementation Libs.gson
 
     implementation "com.github.chrisbanes:PhotoView:$versions.photoview"
