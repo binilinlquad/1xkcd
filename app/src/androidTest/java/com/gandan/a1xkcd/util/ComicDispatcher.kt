@@ -11,7 +11,7 @@ private typealias RequestPredicate = (RecordedRequest?) -> Boolean
 class ComicDispatcher : Dispatcher() {
 
     private val processors = mutableMapOf<RequestPredicate, MockResponse>()
-    override fun dispatch(request: RecordedRequest?): MockResponse {
+    override fun dispatch(request: RecordedRequest): MockResponse {
         processors.forEach { (predicate, response) ->
             if (predicate(request)) {
                 return response

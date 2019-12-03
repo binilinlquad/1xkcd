@@ -34,12 +34,15 @@ class FakeServiceModule : ServiceModule {
         val futureTask: Future<HandshakeCertificates> =
             Executors.newSingleThreadExecutor().submit<HandshakeCertificates> {
                 HandshakeCertificates.Builder()
-                    .addTrustedCertificate(TestCertificate.localhostCertificate.certificate())
+                    .addTrustedCertificate(TestCertificate.localhostCertificate.certificate)
                     .build();
             }
         val clientCertificates = futureTask.get()
         return OkHttpClient.Builder()
-            .sslSocketFactory(clientCertificates.sslSocketFactory(), clientCertificates.trustManager())
+            .sslSocketFactory(
+                clientCertificates.sslSocketFactory(),
+                clientCertificates.trustManager
+            )
             .build()
     }
 
