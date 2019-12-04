@@ -35,7 +35,7 @@ class FakeServiceModule : ServiceModule {
             Executors.newSingleThreadExecutor().submit<HandshakeCertificates> {
                 HandshakeCertificates.Builder()
                     .addTrustedCertificate(TestCertificate.localhostCertificate.certificate)
-                    .build();
+                    .build()
             }
         val clientCertificates = futureTask.get()
         return OkHttpClient.Builder()
