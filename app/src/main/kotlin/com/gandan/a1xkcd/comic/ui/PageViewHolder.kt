@@ -27,10 +27,10 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     fun bind(page: Page?) {
         this.page = page
 
-//        if (this.page == null) {
-//            showPlaceholder()
-//            return
-//        }
+        if (this.page == null) {
+            showPlaceholder()
+            return
+        }
 
         page?.run {
             comicTitle.apply {
