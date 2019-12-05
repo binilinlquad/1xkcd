@@ -29,8 +29,8 @@
 
         <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/comic_page"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_title_comic_page_margin"
                 android:adjustViewBounds="true"
                 app:layout_constraintLeft_toLeftOf="parent"
