@@ -27,6 +27,11 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     fun bind(page: Page?) {
         this.page = page
 
+        if (page == null) {
+            showPlaceholder()
+            return
+        }
+
         page?.run {
             comicTitle.apply {
                 text = page.title
@@ -55,8 +60,6 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
             contentDescription = titlePlaceHolder
         }
         comicPage.apply {
-            clearAnimation()
-            setImageBitmap(null)
             contentDescription = titlePlaceHolder
             setOnClickListener(null)
         }
