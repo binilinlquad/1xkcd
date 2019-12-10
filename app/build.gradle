@@ -57,6 +57,7 @@ dependencies {
     implementation Libs.AndroidX.cardView
     implementation Libs.AndroidX.lifecyleExtension
     implementation Libs.AndroidX.pagingRuntime
+    implementation Libs.AndroidX.swipeRefreshLayout
 
     implementation Libs.OkHttp.core
     implementation Libs.Retrofit.core
