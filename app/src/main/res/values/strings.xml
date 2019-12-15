@@ -6,5 +6,8 @@
   <string name="menu_refresh">Refresh</string>
   <string name="menu_goto">Goto</string>
   <string name="goto_disable">Refresh is happening. Please wait.</string>
-  <string name="empty_string"></string>
+  <string name="empty_string" />
+
+  <string name="comic_title">%1$d.%2$s</string>
+  <string name="comic_title_description">Comic number %1$d titled %2$s</string>
 </resources>

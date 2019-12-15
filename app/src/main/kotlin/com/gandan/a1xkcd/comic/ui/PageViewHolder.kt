@@ -33,8 +33,9 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
         page?.run {
             comicTitle.apply {
-                text = "${page.num}. ${page.title}"
-                contentDescription = "Strip ${page.num} : ${page.title}"
+                text = resources.getString(R.string.comic_title, page.num, page.title)
+                contentDescription =
+                    resources.getString(R.string.comic_title_description, page.num, page.title)
             }
 
             comicPage.apply {
