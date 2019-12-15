@@ -59,6 +59,7 @@ dependencies {
     implementation Libs.AndroidX.recyclerView
     implementation Libs.AndroidX.cardView
     implementation Libs.AndroidX.lifecyleExtension
+    kapt Libs.AndroidX.lifecycleCompiler
     implementation Libs.AndroidX.pagingRuntime
     implementation Libs.AndroidX.swipeRefreshLayout
 

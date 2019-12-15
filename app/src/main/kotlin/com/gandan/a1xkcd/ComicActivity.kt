@@ -7,11 +7,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
+import com.gandan.a1xkcd.comic.viewModel.MainViewModel
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
@@ -35,9 +37,11 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
 
     private var refreshListener: RefreshListener =
-        RefreshListener.create({ showPages(it) }, { showEmptyScreen(it) })
+        RefreshListener.create({ showPages(it) }, { showEmptyPage(it) })
 
     private val job = Job()
+
+    private lateinit var mainViewModel: MainViewModel
 
     override val coroutineContext: CoroutineContext
         get() = job + AppDispatchers.main
@@ -45,17 +49,27 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        mainViewModel.comicIsEmpty.observe(this, Observer {
+            manual_refresh.visibility = if (it) View.VISIBLE else View.GONE
+            comics.visibility = if (!it) View.VISIBLE else View.GONE
+        })
+
+        mainViewModel.totalPages.observe(this, Observer { totalPages ->
+            goToButtonHandler =
+                if (totalPages == MainViewModel.TOTAL_PAGE_EMPTY)
+                    DisabledGoToButtonHandler(this@ComicActivity)
+                else PageGoToButtonHandler(
+                    this@ComicActivity,
+                    totalPages,
+                    comics::scrollToPosition
+                )
+        })
 
         comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
         manual_refresh.setOnClickListener { resetPagesAndRefresh() }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        showComics()
-    }
-
-    fun showComics() {
         resetPagesAndRefresh()
     }
 
@@ -101,34 +115,18 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
         })
     }
 
-    private fun showEmptyScreen(error: Throwable) {
+    private fun showEmptyPage(error: Throwable) {
         launch(coroutineContext) {
             Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
 
-            manual_refresh.visibility = View.VISIBLE
-            comics.visibility = View.GONE
-            goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
+            mainViewModel.showEmptyPage()
         }
     }
 
     private fun showPages(totalPages: Int) {
         launch(coroutineContext) {
-            showComicPages()
-            enableGotoButton(totalPages)
+            mainViewModel.showComicPages(totalPages)
         }
-    }
-
-    private fun enableGotoButton(totalPages: Int) {
-        goToButtonHandler = PageGoToButtonHandler(
-            this@ComicActivity,
-            totalPages,
-            comics::scrollToPosition
-        )
-    }
-
-    private fun showComicPages() {
-        manual_refresh.visibility = View.GONE
-        comics.visibility = View.VISIBLE
     }
 
 }
