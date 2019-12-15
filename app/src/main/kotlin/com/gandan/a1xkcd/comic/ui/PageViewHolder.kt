@@ -15,7 +15,6 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
     private val comicAlt: TextView = root.findViewById(R.id.comic_alt)
     private val comicLoading: ProgressBar = root.findViewById(R.id.comic_loading)
     private val comicRetry: TextView = root.findViewById(R.id.comic_retry)
-
     private val titlePlaceHolder: String by lazy(LazyThreadSafetyMode.NONE) {
         root.context.getString(
             R.string.getting_comic_title_placeholder
@@ -34,8 +33,8 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
 
         page?.run {
             comicTitle.apply {
-                text = page.title
-                contentDescription = "Title is ${page.title}"
+                text = "${page.num}. ${page.title}"
+                contentDescription = "Strip ${page.num} : ${page.title}"
             }
 
             comicPage.apply {
