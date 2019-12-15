@@ -31,25 +31,23 @@ class PageViewHolder(root: View) : RecyclerView.ViewHolder(root) {
             return
         }
 
-        page.run {
-            comicTitle.apply {
-                text = resources.getString(R.string.comic_title, page.num, page.title)
-                contentDescription =
-                    resources.getString(R.string.comic_title_description, page.num, page.title)
-            }
+        comicTitle.apply {
+            text = resources.getString(R.string.comic_title, page.num, page.title)
+            contentDescription =
+                resources.getString(R.string.comic_title_description, page.num, page.title)
+        }
 
-            comicPage.apply {
-                contentDescription = page.alt
-                setOnClickListener { toggleComitPageAndAltText() }
-                loadComicImage(this@run)
-            }
+        comicPage.apply {
+            contentDescription = page.alt
+            setOnClickListener { toggleComitPageAndAltText() }
+            loadComicImage(page)
+        }
 
-            comicAlt.text = page.alt
+        comicAlt.text = page.alt
 
-            comicRetry.setOnClickListener {
-                comicLoading.visibility = View.VISIBLE
-                loadComicImage(this@run)
-            }
+        comicRetry.setOnClickListener {
+            comicLoading.visibility = View.VISIBLE
+            loadComicImage(page)
         }
     }
 
