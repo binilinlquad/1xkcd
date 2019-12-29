@@ -5,16 +5,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
-import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
-import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
@@ -100,15 +95,13 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
 
 
     private fun resetPagesAndRefresh() {
-        val pageSourceFactory = PageDataSourceFactory(service, this, refreshListener)
-        val livePages: LiveData<PagedList<Page>> = LivePagedListBuilder(pageSourceFactory, 1)
-            .build()
+        mainViewModel.setPageProvider(service, this, refreshListener)
 
         comics.layoutManager = LinearLayoutManager(this)
         val pagedPageAdapter = ComicPageAdapter()
         comics.swapAdapter(pagedPageAdapter, false)
 
-        livePages.observe(this, Observer { pagedList ->
+        mainViewModel.pages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
             comics_refresher.isRefreshing = false
             goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
