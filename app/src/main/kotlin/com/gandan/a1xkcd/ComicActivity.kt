@@ -14,14 +14,12 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
-import com.gandan.a1xkcd.ui.RefreshListener
 import com.gandan.a1xkcd.util.AppDispatchers
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -30,9 +28,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     lateinit var service: XkcdService
 
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
-
-    private var refreshListener: RefreshListener =
-        RefreshListener.create({ showPages(it) }, { showEmptyPage(it) })
 
     private val job = Job()
 
@@ -45,6 +40,10 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        mainViewModel.error.observe(this, Observer {
+            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+        })
 
         mainViewModel.comicIsEmpty.observe(this, Observer {
             manual_refresh.visibility = if (it) View.VISIBLE else View.GONE
@@ -95,7 +94,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
 
 
     private fun resetPagesAndRefresh() {
-        mainViewModel.setPageProvider(service, this, refreshListener)
+        mainViewModel.setPageProvider(service, this)
 
         comics.layoutManager = LinearLayoutManager(this)
         val pagedPageAdapter = ComicPageAdapter()
@@ -107,19 +106,4 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
             goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
         })
     }
-
-    private fun showEmptyPage(error: Throwable) {
-        launch(coroutineContext) {
-            Toast.makeText(this@ComicActivity, error.message, Toast.LENGTH_LONG).show()
-
-            mainViewModel.showEmptyPage()
-        }
-    }
-
-    private fun showPages(totalPages: Int) {
-        launch(coroutineContext) {
-            mainViewModel.showComicPages(totalPages)
-        }
-    }
-
 }

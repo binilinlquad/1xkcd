@@ -23,13 +23,23 @@ class MainViewModel : ViewModel() {
     val totalPages: LiveData<Int> = totalPage
     lateinit var pages: LiveData<PagedList<Page>>
         private set
+    private val _lastError = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable> = _lastError
+    private val refreshListener = RefreshListener.create(
+        refreshHandler = { pages ->
+            if (pages > 0) showComicPages(pages) else showEmptyPage()
+        },
+        errorHandler = {
+            showEmptyPage()
+            _lastError.value = it
+        })
 
-    fun showEmptyPage() {
+    private fun showEmptyPage() {
         empty.postValue(true)
         totalPage.postValue(TOTAL_PAGE_EMPTY)
     }
 
-    fun showComicPages(pages: Int) {
+    private fun showComicPages(pages: Int) {
         empty.postValue(false)
         totalPage.postValue(pages)
     }
@@ -38,12 +48,10 @@ class MainViewModel : ViewModel() {
     // TODO : why need different scope?
     fun setPageProvider(
         service: XkcdService,
-        mainScope: CoroutineScope,
-        refreshListener: RefreshListener
+        mainScope: CoroutineScope
     ) {
+        // next creation extract it to outside view model by using dagger
         val pageSourceFactory = PageDataSourceFactory(service, mainScope, refreshListener)
-        pages = LivePagedListBuilder(pageSourceFactory, 1)
-            .build()
-
+        pages = LivePagedListBuilder(pageSourceFactory, 1).build()
     }
 }
