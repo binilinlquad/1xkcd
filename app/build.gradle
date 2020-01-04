@@ -62,6 +62,8 @@ dependencies {
     kapt Libs.AndroidX.lifecycleCompiler
     implementation Libs.AndroidX.pagingRuntime
     implementation Libs.AndroidX.swipeRefreshLayout
+    implementation Libs.AndroidX.viewModelScope
+    implementation Libs.AndroidX.lifeCycleScope
 
     implementation Libs.OkHttp.core
     implementation Libs.Retrofit.core

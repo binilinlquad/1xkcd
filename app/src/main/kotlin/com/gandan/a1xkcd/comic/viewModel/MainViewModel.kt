@@ -3,13 +3,13 @@ package com.gandan.a1xkcd.comic.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.RefreshListener
-import kotlinx.coroutines.CoroutineScope
 
 class MainViewModel : ViewModel() {
     companion object {
@@ -44,14 +44,9 @@ class MainViewModel : ViewModel() {
         totalPage.postValue(pages)
     }
 
-    // main scope is related with Main Thread. If we look at TiVi, TiVi have viewModel scope
-    // TODO : why need different scope?
-    fun setPageProvider(
-        service: XkcdService,
-        mainScope: CoroutineScope
-    ) {
+    fun setPageProvider(service: XkcdService) {
         // next creation extract it to outside view model by using dagger
-        val pageSourceFactory = PageDataSourceFactory(service, mainScope, refreshListener)
+        val pageSourceFactory = PageDataSourceFactory(service, viewModelScope, refreshListener)
         pages = LivePagedListBuilder(pageSourceFactory, 1).build()
     }
 }

@@ -87,7 +87,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
 
 
     private fun resetPagesAndRefresh() {
-        mainViewModel.setPageProvider(service, this)
+        mainViewModel.setPageProvider(service)
 
         comics.layoutManager = LinearLayoutManager(this)
         val pagedPageAdapter = ComicPageAdapter()

@@ -12,6 +12,8 @@ object Libs {
         const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
         const val lifecyleExtension = "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
         const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
+        const val viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01"
+        const val lifeCycleScope = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha01"
 
         object Test {
             private const val version = "1.1.1"
