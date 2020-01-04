@@ -14,27 +14,20 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
-import com.gandan.a1xkcd.util.AppDispatchers
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
+class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     @Inject
     lateinit var service: XkcdService
 
     private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
 
-    private val job = Job()
-
     private lateinit var mainViewModel: MainViewModel
-
-    override val coroutineContext: CoroutineContext
-        get() = job + AppDispatchers.main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +61,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope {
     }
 
     override fun onDestroy() {
-        job.cancelChildren()
+        cancel()
         super.onDestroy()
     }
 
