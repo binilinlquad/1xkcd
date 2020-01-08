@@ -14,12 +14,12 @@ import kotlinx.coroutines.withContext
 
 class PageDataSourceFactory(
     private val service: XkcdService,
-    private val uiScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
     private val refreshListener: RefreshListener
 ) : DataSource.Factory<Int, Page>() {
     private val sourceLiveData = MutableLiveData<PageDataSource>()
     override fun create(): DataSource<Int, Page> {
-        val source = PageDataSource(service, uiScope, refreshListener)
+        val source = PageDataSource(service, coroutineScope, refreshListener)
         sourceLiveData.postValue(source)
         return source
     }
