@@ -96,7 +96,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         mainViewModel.pages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
             comics_refresher.isRefreshing = false
-            goToButtonHandler = DisabledGoToButtonHandler(this@ComicActivity)
         })
     }
 }
