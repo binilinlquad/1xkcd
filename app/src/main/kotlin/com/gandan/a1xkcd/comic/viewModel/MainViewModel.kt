@@ -9,7 +9,7 @@ import androidx.paging.PagedList
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
-import com.gandan.a1xkcd.ui.RefreshListener
+import com.gandan.a1xkcd.ui.FetchListener
 
 class MainViewModel : ViewModel() {
     companion object {
@@ -25,11 +25,11 @@ class MainViewModel : ViewModel() {
         private set
     private val _lastError = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> = _lastError
-    private val refreshListener = RefreshListener.create(
-        refreshHandler = { pages ->
+    private val fetchListener = FetchListener.create(
+        onSuccess = { pages ->
             if (pages > 0) showComicPages(pages) else showEmptyPage()
         },
-        errorHandler = {
+        onError = {
             showEmptyPage()
             _lastError.value = it
         })
@@ -46,7 +46,7 @@ class MainViewModel : ViewModel() {
 
     fun setPageProvider(service: XkcdService) {
         // next creation extract it to outside view model by using dagger
-        val pageSourceFactory = PageDataSourceFactory(service, viewModelScope, refreshListener)
+        val pageSourceFactory = PageDataSourceFactory(service, viewModelScope, fetchListener)
         pages = LivePagedListBuilder(pageSourceFactory, 1).build()
     }
 }

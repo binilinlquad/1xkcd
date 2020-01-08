@@ -6,7 +6,7 @@ import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
-import com.gandan.a1xkcd.ui.RefreshListener
+import com.gandan.a1xkcd.ui.FetchListener
 import com.gandan.a1xkcd.util.AppDispatchers.network
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -15,11 +15,11 @@ import kotlinx.coroutines.withContext
 class PageDataSourceFactory(
     private val service: XkcdService,
     private val coroutineScope: CoroutineScope,
-    private val refreshListener: RefreshListener
+    private val fetchListener: FetchListener
 ) : DataSource.Factory<Int, Page>() {
     private val sourceLiveData = MutableLiveData<PageDataSource>()
     override fun create(): DataSource<Int, Page> {
-        val source = PageDataSource(service, coroutineScope, refreshListener)
+        val source = PageDataSource(service, coroutineScope, fetchListener)
         sourceLiveData.postValue(source)
         return source
     }
@@ -29,7 +29,7 @@ class PageDataSourceFactory(
 class PageDataSource(
     private val service: XkcdService,
     private val uiScope: CoroutineScope,
-    private val refreshListener: RefreshListener
+    private val fetchListener: FetchListener
 ) : ItemKeyedDataSource<Int, Page>() {
 
     companion object {
@@ -44,10 +44,10 @@ class PageDataSource(
 
                 Log.i(TAG, "load latest page successfully")
                 callback.onResult(listOf(latestPage), 0, totalPages)
-                refreshListener.onRefreshed(totalPages)
+                fetchListener.onSuccess(totalPages)
             } catch (e: Throwable) {
                 Log.i(TAG, "fail loading latest page with reason ${e.message}")
-                refreshListener.onError(e)
+                fetchListener.onError(e)
             }
         }
     }
