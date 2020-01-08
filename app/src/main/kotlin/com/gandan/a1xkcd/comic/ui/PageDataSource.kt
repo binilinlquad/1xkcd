@@ -1,7 +1,6 @@
 package com.gandan.a1xkcd.comic.ui
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
 import com.gandan.a1xkcd.service.Page
@@ -17,11 +16,8 @@ class PageDataSourceFactory(
     private val coroutineScope: CoroutineScope,
     private val fetchListener: FetchListener
 ) : DataSource.Factory<Int, Page>() {
-    private val sourceLiveData = MutableLiveData<PageDataSource>()
     override fun create(): DataSource<Int, Page> {
-        val source = PageDataSource(service, coroutineScope, fetchListener)
-        sourceLiveData.postValue(source)
-        return source
+        return PageDataSource(service, coroutineScope, fetchListener)
     }
 
 }
