@@ -16,37 +16,48 @@ class MainViewModel : ViewModel() {
         const val TOTAL_PAGE_EMPTY = 0
     }
 
-    private val empty = MutableLiveData(false)
-    private val totalPage = MutableLiveData(TOTAL_PAGE_EMPTY)
+    var currentTotalPages = TOTAL_PAGE_EMPTY
+        private set
 
-    val comicIsEmpty: LiveData<Boolean> = empty
-    val totalPages: LiveData<Int> = totalPage
     lateinit var pages: LiveData<PagedList<Page>>
         private set
-    private val _lastError = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable> = _lastError
+
     private val fetchListener = FetchListener.create(
         onSuccess = { pages ->
-            if (pages > 0) showComicPages(pages) else showEmptyPage()
+            if (pages > 0) {
+                currentTotalPages = pages
+
+                _state.value = MainState.ShowComic
+            } else {
+                _state.value = MainState.Empty
+            }
         },
+
         onError = {
-            showEmptyPage()
-            _lastError.value = it
+            currentTotalPages = TOTAL_PAGE_EMPTY
+            _state.value = MainState.Error(it)
         })
 
-    private fun showEmptyPage() {
-        empty.postValue(true)
-        totalPage.postValue(TOTAL_PAGE_EMPTY)
-    }
+    private val _state = MutableLiveData<MainState>()
+    val event: LiveData<MainState> = _state
 
-    private fun showComicPages(pages: Int) {
-        empty.postValue(false)
-        totalPage.postValue(pages)
-    }
-
-    fun setPageProvider(service: XkcdService) {
+    // service is not part of bind so should not put as parameter, but we can ignore it for now
+    fun bind(service: XkcdService) {
+        if (_state.value == MainState.ShowComic) {
+            _state.value = MainState.Refresh
+        } else {
+            _state.value = MainState.Filling
+        }
         // next creation extract it to outside view model by using dagger
         val pageSourceFactory = PageDataSourceFactory(service, viewModelScope, fetchListener)
         pages = LivePagedListBuilder(pageSourceFactory, 1).build()
     }
+}
+
+sealed class MainState {
+    object Filling : MainState()
+    object ShowComic : MainState()
+    object Empty : MainState()
+    object Refresh : MainState()
+    class Error(val error: Throwable) : MainState()
 }

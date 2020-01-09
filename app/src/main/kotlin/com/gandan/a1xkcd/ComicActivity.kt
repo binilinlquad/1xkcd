@@ -9,7 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
+import com.gandan.a1xkcd.comic.viewModel.MainState
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
+import com.gandan.a1xkcd.comic.viewModel.MainViewModel.Companion.TOTAL_PAGE_EMPTY
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
@@ -34,30 +36,47 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         setContentView(R.layout.activity_comics)
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        mainViewModel.error.observe(this, Observer {
-            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-        })
-
-        mainViewModel.comicIsEmpty.observe(this, Observer {
-            manual_refresh.visibility = if (it) View.VISIBLE else View.GONE
-            comics.visibility = if (!it) View.VISIBLE else View.GONE
-        })
-
-        mainViewModel.totalPages.observe(this, Observer { totalPages ->
-            goToButtonHandler =
-                if (totalPages == MainViewModel.TOTAL_PAGE_EMPTY)
-                    DisabledGoToButtonHandler(this@ComicActivity)
-                else PageGoToButtonHandler(
-                    this@ComicActivity,
-                    totalPages,
-                    comics::scrollToPosition
-                )
-        })
 
         comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
         manual_refresh.setOnClickListener { resetPagesAndRefresh() }
 
         resetPagesAndRefresh()
+    }
+
+    private fun showEmptyPage() {
+        comics_refresher.isRefreshing = false
+        manual_refresh.visibility = View.VISIBLE
+        comics.visibility = View.GONE
+    }
+
+    private fun showComicPage() {
+        comics_refresher.isRefreshing = false
+        manual_refresh.visibility = View.GONE
+        comics.visibility = View.VISIBLE
+
+        goToButtonHandler = chooseStrategyForGoto()
+    }
+
+    private fun showRefresh() {
+        comics_refresher.isRefreshing = true
+    }
+
+    private fun chooseStrategyForGoto(): GoToButtonHandler {
+        return mainViewModel.currentTotalPages.let {
+            if (it == TOTAL_PAGE_EMPTY) {
+                DisabledGoToButtonHandler(this@ComicActivity)
+            } else {
+                PageGoToButtonHandler(
+                    this@ComicActivity,
+                    it,
+                    comics::scrollToPosition
+                )
+            }
+        }
+    }
+
+    private fun showError(t: Throwable) {
+        Toast.makeText(this, t.message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {
@@ -87,12 +106,22 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
 
 
     private fun resetPagesAndRefresh() {
-        mainViewModel.setPageProvider(service)
+        mainViewModel.event.observe(this, Observer { event ->
+            when (event) {
+                is MainState.Empty -> showEmptyPage()
+                is MainState.ShowComic -> showComicPage()
+                is MainState.Error -> showError(event.error)
+                is MainState.Refresh -> showRefresh()
+            }
+        })
+
+        mainViewModel.bind(service)
 
         comics.layoutManager = LinearLayoutManager(this)
         val pagedPageAdapter = ComicPageAdapter()
         comics.swapAdapter(pagedPageAdapter, false)
 
+        // still looking how to put it nicely with viewmodel
         mainViewModel.pages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
             comics_refresher.isRefreshing = false
