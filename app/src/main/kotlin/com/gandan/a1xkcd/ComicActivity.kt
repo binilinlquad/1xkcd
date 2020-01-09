@@ -124,7 +124,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         // still looking how to put it nicely with viewmodel
         mainViewModel.pages.observe(this, Observer { pagedList ->
             pagedPageAdapter.submitList(pagedList)
-            comics_refresher.isRefreshing = false
         })
     }
 }
