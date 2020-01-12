@@ -14,7 +14,7 @@ class PageGoToButtonHandler(
     init {
         if (totalPages < 1) throw IllegalArgumentException("Total page should bigger than 0 but $totalPages")
 
-        pages = (1..totalPages).map { "$it" }.toTypedArray()
+        pages = (totalPages downTo 1).map { "$it" }.toTypedArray()
     }
 
     override fun onClick() {
