@@ -10,7 +10,6 @@ import com.gandan.a1xkcd.rule.AcceptanceTestRule
 import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
-import com.gandan.a1xkcd.util.waitUntilNotDisplayed
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
 import org.junit.Ignore
@@ -34,7 +33,6 @@ class ComicAcceptanceTest {
         waitComicPagesPopulated()
 
         val firstComic = comicContainerAt(0)
-        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
@@ -42,13 +40,11 @@ class ComicAcceptanceTest {
     fun given_opening_app_and_refresh_failed__then_user_should_able_reload_whole_pages() {
         testFixture.responseWithFailAll()
         activityRule.launchActivity(null)
-        onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
         testFixture.responseWithSuccessOnlyFirstPage()
 
         onView(withId(R.id.manual_refresh)).perform(click())
 
         val firstComic = comicContainerAt(0)
-        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
@@ -58,12 +54,10 @@ class ComicAcceptanceTest {
         activityRule.launchActivity(null)
         waitComicPagesPopulated()
         val firstComic = comicContainerAt(0)
-        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
         onView(pageRetry(firstComic)).check(matches(isDisplayed()))
         testFixture.responseWithSuccessOnlyFirstPage()
 
         onView(pageRetry(firstComic)).perform(click())
-        onView(pageProgressBar(firstComic)).perform(waitUntilNotDisplayed())
 
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
@@ -72,7 +66,6 @@ class ComicAcceptanceTest {
     fun given_click_refresh_menu__then_user_should_able_to_reload_whole_pages() {
         testFixture.responseWithFailAll()
         activityRule.launchActivity(null)
-        onView(withId(R.id.comics)).perform(waitUntilNotDisplayed())
 
         testFixture.responseWithSuccessOnlyFirstPage()
 

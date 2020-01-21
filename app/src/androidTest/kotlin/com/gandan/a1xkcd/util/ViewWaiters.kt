@@ -13,6 +13,7 @@ fun waitUntilNotDisplayed(): ViewAction {
     return NotDisplayedWaiter()
 }
 
+// TODO : will fail when view has been not displayed when action is performed
 class NotDisplayedWaiter : ViewAction {
     private companion object {
         private const val timeout = 30_000L
