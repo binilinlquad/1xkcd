@@ -52,10 +52,11 @@ object Libs {
     }
 
     object OkHttp {
-        private const val version = "4.2.2"
+        private const val version = "4.3.1"
         const val core = "com.squareup.okhttp3:okhttp:$version"
         const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
         const val tls = "com.squareup.okhttp3:okhttp-tls:$version"
+        const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:$version"
 
         const val idlingResource = "com.jakewharton.espresso:okhttp3-idling-resource:1.0.0"
     }

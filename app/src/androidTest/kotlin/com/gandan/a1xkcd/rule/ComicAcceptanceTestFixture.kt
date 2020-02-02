@@ -1,8 +1,8 @@
 package com.gandan.a1xkcd.rule
 
-import android.app.Activity
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
+import coil.Coil
 import com.gandan.a1xkcd.MOCKWEBSERVER_PORT
 import com.gandan.a1xkcd.TestApplication
 import com.gandan.a1xkcd.util.ComicDispatcher
@@ -11,7 +11,7 @@ import okio.Buffer
 import org.junit.rules.ExternalResource
 import java.io.InputStream
 
-class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestRule<T>) : ExternalResource() {
+class ComicAcceptanceTestFixture(private val rule: MockWebServerRule) : ExternalResource() {
 
     val mockWebServer
         get() = rule.mockWebServer
@@ -39,6 +39,8 @@ class ComicAcceptanceTestFixture<T : Activity>(private val rule: AcceptanceTestR
 
     private fun tearDown() {
         idlingRegistry.unregister(okHttp3IdlingResource)
+        // clear coil cache inside image loader so every load will trigger network request
+        Coil.loader().clearMemory()
     }
 
     override fun before() {

@@ -5,10 +5,11 @@ import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.gandan.a1xkcd.rule.AcceptanceTestRule
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.rule.ActivityTestRule
 import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
+import com.gandan.a1xkcd.rule.MockWebServerRule
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import org.hamcrest.Matcher
@@ -23,11 +24,15 @@ class ComicAcceptanceTest {
 
     @Rule
     @JvmField
-    val activityRule = AcceptanceTestRule(ComicActivity::class.java, true, false, MOCKWEBSERVER_PORT)
+    val mockWebServerRule = MockWebServerRule(MOCKWEBSERVER_PORT)
 
     @Rule
     @JvmField
-    val testFixture = ComicAcceptanceTestFixture(activityRule)
+    val activityRule = ActivityTestRule(ComicActivity::class.java, true, false)
+
+    @Rule
+    @JvmField
+    val testFixture = ComicAcceptanceTestFixture(mockWebServerRule)
 
     @Test
     fun given_opening_app_and_success_load__then_user_should_able_see_comic_page() {

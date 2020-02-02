@@ -12,6 +12,7 @@ import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import javax.inject.Singleton
 
 
 @Component(
@@ -21,6 +22,8 @@ import okhttp3.OkHttpClient
         ActivityModule::class,
         ProductionServiceModule::class]
 )
+
+@Singleton
 interface AppComponent {
     fun inject(app: ComicApplication)
 }
@@ -33,12 +36,13 @@ interface ActivityModule {
 
     @ActivtyScope
     @ContributesAndroidInjector()
-    abstract fun contributeYourActivityInjector(): ComicActivity
+    fun contributeYourActivityInjector(): ComicActivity
 }
 
 @Module
 class ProductionServiceModule(private val application: ComicApplication) : ServiceModule {
 
+    @Singleton
     @Provides
     override fun webClient(): OkHttpClient {
         val cacheSize = 10L * 1024 * 1024 // 10 MB
@@ -49,9 +53,10 @@ class ProductionServiceModule(private val application: ComicApplication) : Servi
             .build()
     }
 
+    @Singleton
     @Provides
-    override fun service(okHttpClient: OkHttpClient): XkcdService {
-        return createXkcdService(okHttpClient, "https://xkcd.com/")
+    override fun service(okHttpClient: dagger.Lazy<OkHttpClient>): XkcdService {
+        return createXkcdService(okHttpClient.get(), "https://xkcd.com/")
     }
 }
 
@@ -59,5 +64,5 @@ interface ServiceModule {
 
     fun webClient(): OkHttpClient
 
-    fun service(okHttpClient: OkHttpClient): XkcdService
+    fun service(okHttpClient: dagger.Lazy<OkHttpClient>): XkcdService
 }

@@ -18,16 +18,12 @@ open class ComicApplication : Application(), HasActivityInjector {
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
     @Inject
-    lateinit var okHttp3Client: OkHttpClient
+    lateinit var okHttp3Client: dagger.Lazy<OkHttpClient>
 
     override fun onCreate() {
         applicationInjector().inject(this)
         super.onCreate()
-        Coil.setDefaultImageLoader(
-            ImageLoaderBuilder(this)
-                .okHttpClient(okHttp3Client)
-                .build()
-        )
+        initializeCoil()
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {
@@ -38,6 +34,14 @@ open class ComicApplication : Application(), HasActivityInjector {
         return DaggerAppComponent.builder()
             .productionServiceModule(ProductionServiceModule(this))
             .build()
+    }
+
+    protected open fun initializeCoil() {
+        Coil.setDefaultImageLoader(
+            ImageLoaderBuilder(this)
+                .okHttpClient(okHttp3Client.get())
+                .build()
+        )
     }
 
 }
