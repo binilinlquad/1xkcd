@@ -88,6 +88,7 @@ dependencies {
 
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Test.extJUnit
     androidTestImplementation Libs.AndroidX.Test.Espresso.core
     androidTestImplementation Libs.AndroidX.Test.Espresso.contrib
 

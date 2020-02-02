@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gandan.a1xkcd.rule.AcceptanceTestRule
 import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
@@ -15,7 +16,9 @@ import org.hamcrest.Matchers.*
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class ComicAcceptanceTest {
 
     @Rule
