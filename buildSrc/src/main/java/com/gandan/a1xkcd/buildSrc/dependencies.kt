@@ -20,6 +20,7 @@ object Libs {
             const val runner = "androidx.test:runner:$version"
             const val rules = "androidx.test:rules:$version"
             const val orchestrator = "androidx.test:orchestrator:$version"
+            const val extJUnit = "androidx.test.ext:junit:$version"
 
             object Espresso {
                 private const val version = "3.1.1"
