@@ -79,6 +79,22 @@ class ComicAcceptanceTestFixture(private val rule: MockWebServerRule) : External
         }
     }
 
+    fun responseWithSuccessAll() {
+        val dispatcher = ComicDispatcher().apply {
+            whenPathContains("/info.0.json")
+                .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
+
+            whenPathContains("/sample.jpg")
+                .thenResponseSuccess(openTestAsset("sample.jpg")
+                    .let { Buffer().readFrom(it) })
+
+            rest()
+                .thenResponseSuccess(sampleLatestPage("https://localhost:$MOCKWEBSERVER_PORT/sample.jpg"))
+
+        }
+
+        mockWebServer.dispatcher = dispatcher
+    }
 
     private fun openTestAsset(filename: String): InputStream {
         return testContext.assets.open(filename)

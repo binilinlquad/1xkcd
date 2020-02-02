@@ -12,9 +12,9 @@ import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.rule.MockWebServerRule
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
+import com.gandan.a1xkcd.util.waitUntilNotDisplayed
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,12 +86,12 @@ class ComicAcceptanceTest {
         onView(pageImage(firstComic)).check(matches(isDisplayed()))
     }
 
-    @Ignore("Investigate RecycleViewMatcher cannot find target items")
     @Test
     fun given_click_goto__then_user_should_able_choose_other_page() {
         val totalPages = testFixture.totalSamplePages
-        val targetPage = 2009   // hardcoded for simplify setup
-        testFixture.responseWithSuccessOnlyFirstPage()
+        val targetPage = 2105   // hardcoded for simplify setup
+        val targetItemPosition = totalPages - targetPage
+        testFixture.responseWithSuccessAll()
 
         activityRule.launchActivity(null)
         onView(withText(R.string.menu_goto)).perform(click())
@@ -99,10 +99,8 @@ class ComicAcceptanceTest {
         onData(allOf(`is`(instanceOf(String::class.java)), `is`("$targetPage")))
             .perform(click())
 
-        waitComicPagesPopulated()
-
-        // TODO: it will always fail
-        val targetComic = comicContainerAt(5) // hardcoded for simplify setup
+        val targetComic = comicContainerAt(targetItemPosition)
+        onView(pageRetry(targetComic)).perform(waitUntilNotDisplayed())
         onView(pageImage(targetComic)).check(matches(isDisplayed()))
     }
 

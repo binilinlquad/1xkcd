@@ -34,7 +34,7 @@ class ComicDispatcher : Dispatcher() {
                 .setResponseCode(200)
                 .setBody(body)
 
-            processors.put(condition, response)
+            processors[condition] = response
         }
 
         fun thenResponseSuccess(body: Buffer) {
@@ -49,6 +49,10 @@ class ComicDispatcher : Dispatcher() {
 
     fun whenPathContains(expectedPath: String): OngoingResponseStubbing {
         return OngoingResponseStubbing { request -> request?.path?.contains(expectedPath) == true }
+    }
+
+    fun rest(): OngoingResponseStubbing {
+        return OngoingResponseStubbing { _ -> true }
     }
 
 }
