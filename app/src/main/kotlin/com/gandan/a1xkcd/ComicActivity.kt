@@ -120,7 +120,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun resetPagesAndRefresh() {
-        mainViewModel.event.observe(this, Observer { event -> render(event) })
+        mainViewModel.state.observe(this, Observer { event -> render(event) })
         mainViewModel.bind(service)
 
         comics.layoutManager = LinearLayoutManager(this)

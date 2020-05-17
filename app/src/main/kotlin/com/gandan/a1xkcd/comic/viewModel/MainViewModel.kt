@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
         })
 
     private val _state = MutableLiveData<MainState>()
-    val event: LiveData<MainState> = _state
+    val state: LiveData<MainState> = _state
 
     // service is not part of bind so should not put as parameter, but we can ignore it for now
     fun bind(service: XkcdService) {
