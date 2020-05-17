@@ -12,29 +12,19 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.FetchListener
 
 class MainViewModel : ViewModel() {
-    companion object {
-        const val TOTAL_PAGE_EMPTY = 0
-    }
-
-    var currentTotalPages = TOTAL_PAGE_EMPTY
-        private set
-
     lateinit var pages: LiveData<PagedList<Page>>
         private set
 
     private val fetchListener = FetchListener.create(
         onSuccess = { pages ->
             if (pages > 0) {
-                currentTotalPages = pages
-
-                _state.value = MainState.ShowComic
+                _state.value = MainState.ShowComic(pages)
             } else {
                 _state.value = MainState.Empty
             }
         },
 
         onError = {
-            currentTotalPages = TOTAL_PAGE_EMPTY
             _state.value = MainState.Error(it)
         })
 
@@ -43,7 +33,7 @@ class MainViewModel : ViewModel() {
 
     // service is not part of bind so should not put as parameter, but we can ignore it for now
     fun bind(service: XkcdService) {
-        if (_state.value == MainState.ShowComic) {
+        if (_state.value is MainState.ShowComic) {
             _state.value = MainState.Refresh
         } else {
             _state.value = MainState.Filling
@@ -56,7 +46,7 @@ class MainViewModel : ViewModel() {
 
 sealed class MainState {
     object Filling : MainState()
-    object ShowComic : MainState()
+    class ShowComic(val totalPages: Int) : MainState()
     object Empty : MainState()
     object Refresh : MainState()
     class Error(val error: Throwable) : MainState()

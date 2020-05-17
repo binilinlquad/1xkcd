@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.viewModel.MainState
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
-import com.gandan.a1xkcd.comic.viewModel.MainViewModel.Companion.TOTAL_PAGE_EMPTY
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
@@ -62,13 +61,13 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     }
 
     private fun chooseStrategyForGoto(): GoToButtonHandler {
-        return mainViewModel.currentTotalPages.let {
-            if (it == TOTAL_PAGE_EMPTY) {
+        return mainViewModel.event.value.let {
+            if (it !is MainState.ShowComic) {
                 DisabledGoToButtonHandler(this@ComicActivity)
             } else {
                 PageGoToButtonHandler(
                     this@ComicActivity,
-                    it,
+                    it.totalPages,
                     comics::scrollToPosition
                 )
             }
@@ -126,4 +125,5 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
             pagedPageAdapter.submitList(pagedList)
         })
     }
+
 }
