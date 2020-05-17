@@ -52,26 +52,10 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.GONE
         comics.visibility = View.VISIBLE
-
-        goToButtonHandler = chooseStrategyForGoto()
     }
 
     private fun showRefresh() {
         comics_refresher.isRefreshing = true
-    }
-
-    private fun chooseStrategyForGoto(): GoToButtonHandler {
-        return mainViewModel.event.value.let {
-            if (it !is MainState.ShowComic) {
-                DisabledGoToButtonHandler(this@ComicActivity)
-            } else {
-                PageGoToButtonHandler(
-                    this@ComicActivity,
-                    it.totalPages,
-                    comics::scrollToPosition
-                )
-            }
-        }
     }
 
     private fun showError(t: Throwable) {
@@ -103,17 +87,40 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
+    private fun render(state: MainState) {
+        when (state) {
+            is MainState.Empty -> {
+                showEmptyPage()
+                disableGoToPage()
+            }
+            is MainState.ShowComic -> {
+                showComicPage()
+                enableGoToPage(state.totalPages)
+            }
+            is MainState.Error -> {
+                showError(state.error)
+                disableGoToPage()
+            }
+            is MainState.Refresh -> {
+                showRefresh()
+                disableGoToPage()
+            }
+        }
+    }
+
+    private fun enableGoToPage(totalPages: Int) {
+        goToButtonHandler = PageGoToButtonHandler(
+            this, totalPages,
+            comics::scrollToPosition
+        )
+    }
+
+    private fun disableGoToPage() {
+        goToButtonHandler = DisabledGoToButtonHandler(this)
+    }
 
     private fun resetPagesAndRefresh() {
-        mainViewModel.event.observe(this, Observer { event ->
-            when (event) {
-                is MainState.Empty -> showEmptyPage()
-                is MainState.ShowComic -> showComicPage()
-                is MainState.Error -> showError(event.error)
-                is MainState.Refresh -> showRefresh()
-            }
-        })
-
+        mainViewModel.event.observe(this, Observer { event -> render(event) })
         mainViewModel.bind(service)
 
         comics.layoutManager = LinearLayoutManager(this)
