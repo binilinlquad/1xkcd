@@ -40,7 +40,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         resetPagesAndRefresh()
     }
 
-    private fun showEmptyPage(state: MainState.Empty) {
+    private fun renderEmpty(state: MainState.Empty) {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.VISIBLE
         comics.visibility = View.GONE
@@ -48,7 +48,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showComicPage(state: MainState.ShowComic) {
+    private fun renderPages(state: MainState.ShowComic) {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.GONE
         comics.visibility = View.VISIBLE
@@ -57,13 +57,13 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showRefresh(state: MainState.Refresh) {
+    private fun renderRefresh(state: MainState.Refresh) {
         comics_refresher.isRefreshing = true
 
         gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showError(state: MainState.Error) {
+    private fun renderError(state: MainState.Error) {
         Toast.makeText(this, state.error.message, Toast.LENGTH_LONG).show()
 
         gotoMenu?.isEnabled = state.gotoIsEnabled
@@ -103,16 +103,16 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     private fun render(state: MainState) {
         when (state) {
             is MainState.Empty -> {
-                showEmptyPage(state)
+                renderEmpty(state)
             }
             is MainState.ShowComic -> {
-                showComicPage(state)
+                renderPages(state)
             }
             is MainState.Error -> {
-                showError(state)
+                renderError(state)
             }
             is MainState.Refresh -> {
-                showRefresh(state)
+                renderRefresh(state)
             }
         }
     }
