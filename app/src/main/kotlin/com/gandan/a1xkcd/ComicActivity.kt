@@ -12,7 +12,6 @@ import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.viewModel.MainState
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
 import com.gandan.a1xkcd.service.XkcdService
-import com.gandan.a1xkcd.ui.DisabledGoToButtonHandler
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
 import dagger.android.support.DaggerAppCompatActivity
@@ -26,7 +25,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     @Inject
     lateinit var service: XkcdService
 
-    private var goToButtonHandler: GoToButtonHandler = DisabledGoToButtonHandler(this)
+    private lateinit var goToButtonHandler: GoToButtonHandler
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -34,7 +33,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comics)
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
 
         comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
         manual_refresh.setOnClickListener { resetPagesAndRefresh() }
@@ -67,10 +65,18 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menus, menu)
         return true
+    }
+
+    private var gotoMenu: MenuItem? = null
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        gotoMenu = menu?.findItem(R.id.menu_goto)
+        gotoMenu?.run {
+            mainViewModel.gotoIsEnabled.observe(this@ComicActivity, Observer { isEnabled = it })
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -91,7 +97,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         when (state) {
             is MainState.Empty -> {
                 showEmptyPage()
-                disableGoToPage()
             }
             is MainState.ShowComic -> {
                 showComicPage()
@@ -99,11 +104,9 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
             }
             is MainState.Error -> {
                 showError(state.error)
-                disableGoToPage()
             }
             is MainState.Refresh -> {
                 showRefresh()
-                disableGoToPage()
             }
         }
     }
@@ -113,10 +116,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
             this, totalPages,
             comics::scrollToPosition
         )
-    }
-
-    private fun disableGoToPage() {
-        goToButtonHandler = DisabledGoToButtonHandler(this)
     }
 
     private fun resetPagesAndRefresh() {
