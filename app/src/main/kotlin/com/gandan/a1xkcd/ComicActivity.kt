@@ -100,7 +100,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
             }
             is MainState.ShowComic -> {
                 showComicPage()
-                enableGoToPage(state.totalPages)
+                setupGotoButtonHandler(state.totalPages)
             }
             is MainState.Error -> {
                 showError(state.error)
@@ -111,11 +111,8 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private fun enableGoToPage(totalPages: Int) {
-        goToButtonHandler = PageGoToButtonHandler(
-            this, totalPages,
-            comics::scrollToPosition
-        )
+    private fun setupGotoButtonHandler(totalPages: Int) {
+        goToButtonHandler = PageGoToButtonHandler(this, totalPages, comics::scrollToPosition)
     }
 
     private fun resetPagesAndRefresh() {
