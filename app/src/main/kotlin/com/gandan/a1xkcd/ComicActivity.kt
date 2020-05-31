@@ -40,24 +40,33 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         resetPagesAndRefresh()
     }
 
-    private fun showEmptyPage() {
+    private fun showEmptyPage(state: MainState.Empty) {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.VISIBLE
         comics.visibility = View.GONE
+
+        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showComicPage() {
+    private fun showComicPage(state: MainState.ShowComic) {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.GONE
         comics.visibility = View.VISIBLE
+
+        goToButtonHandler = PageGoToButtonHandler(this, state.totalPages, comics::scrollToPosition)
+        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showRefresh() {
+    private fun showRefresh(state: MainState.Refresh) {
         comics_refresher.isRefreshing = true
+
+        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun showError(t: Throwable) {
-        Toast.makeText(this, t.message, Toast.LENGTH_LONG).show()
+    private fun showError(state: MainState.Error) {
+        Toast.makeText(this, state.error.message, Toast.LENGTH_LONG).show()
+
+        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
     override fun onDestroy() {
@@ -73,9 +82,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     private var gotoMenu: MenuItem? = null
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         gotoMenu = menu?.findItem(R.id.menu_goto)
-        gotoMenu?.run {
-            mainViewModel.gotoIsEnabled.observe(this@ComicActivity, Observer { isEnabled = it })
-        }
+        gotoMenu?.run { isEnabled = mainViewModel.state.value?.gotoIsEnabled ?: false }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -96,17 +103,16 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     private fun render(state: MainState) {
         when (state) {
             is MainState.Empty -> {
-                showEmptyPage()
+                showEmptyPage(state)
             }
             is MainState.ShowComic -> {
-                showComicPage()
-                setupGotoButtonHandler(state.totalPages)
+                showComicPage(state)
             }
             is MainState.Error -> {
-                showError(state.error)
+                showError(state)
             }
             is MainState.Refresh -> {
-                showRefresh()
+                showRefresh(state)
             }
         }
     }
