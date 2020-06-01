@@ -134,10 +134,6 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         }
     }
 
-    private fun setupGotoButtonHandler(totalPages: Int) {
-        goToButtonHandler = PageGoToButtonHandler(this, totalPages, comics::scrollToPosition)
-    }
-
     private fun resetPagesAndRefresh() {
         mainViewModel.state.observe(this, Observer { event -> render(event) })
         mainViewModel.bind(service)
