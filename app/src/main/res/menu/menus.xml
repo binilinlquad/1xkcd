@@ -5,11 +5,17 @@
             android:id="@+id/menu_goto"
             android:title="@string/menu_goto"
             app:showAsAction="ifRoom"
-            android:contentDescription="@string/menu_goto"/>
+            android:contentDescription="@string/menu_goto" />
 
     <item
             android:id="@+id/menu_refresh"
             android:title="@string/menu_refresh"
             app:showAsAction="never"
-            android:contentDescription="@string/menu_refresh"/>
+            android:contentDescription="@string/menu_refresh" />
+
+    <item
+            android:id="@+id/menu_open_source_licenses"
+            android:contentDescription="@string/menu_oss_licenses"
+            android:title="@string/menu_oss_licenses"
+            app:showAsAction="never" />
 </menu>

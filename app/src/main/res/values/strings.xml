@@ -10,4 +10,5 @@
 
   <string name="comic_title">%1$d.%2$s</string>
   <string name="comic_title_description">Comic number %1$d titled %2$s</string>
+  <string name="menu_oss_licenses">OSS Licenses</string>
 </resources>

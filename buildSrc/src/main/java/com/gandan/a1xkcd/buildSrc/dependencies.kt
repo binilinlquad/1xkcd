@@ -62,7 +62,7 @@ object Libs {
     }
 
     const val gson = "com.google.code.gson:gson:2.8.5"
-    
+
     object Retrofit {
         private const val version = "2.6.2"
         const val core = "com.squareup.retrofit2:retrofit:$version"
@@ -72,4 +72,6 @@ object Libs {
     const val photoView = "com.github.chrisbanes:PhotoView:2.2.0"
 
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+
+    const val ossLicenses = "com.google.android.gms:play-services-oss-licenses:17.0.0"
 }

@@ -1,5 +1,6 @@
 package com.gandan.a1xkcd
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,12 +9,13 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.model.MainState
+import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
@@ -111,6 +113,10 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
             }
             R.id.menu_goto -> {
                 goToButtonHandler.onClick()
+                true
+            }
+            R.id.menu_open_source_licenses -> {
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
