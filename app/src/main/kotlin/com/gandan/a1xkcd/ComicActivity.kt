@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
-import com.gandan.a1xkcd.comic.viewModel.MainState
+import com.gandan.a1xkcd.comic.model.MainState
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.GoToButtonHandler

@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.gandan.a1xkcd.comic.model.MainMsg
+import com.gandan.a1xkcd.comic.model.MainState
+import com.gandan.a1xkcd.comic.model.reduce
 import com.gandan.a1xkcd.comic.ui.PageDataSourceFactory
 import com.gandan.a1xkcd.service.Page
 import com.gandan.a1xkcd.service.XkcdService
@@ -17,27 +20,19 @@ class MainViewModel : ViewModel() {
 
     private val fetchListener = FetchListener.create(
         onSuccess = { pages ->
-            if (pages > 0) {
-                _state.value = MainState.ShowComic(pages)
-            } else {
-                _state.value = MainState.Empty
-            }
+            _state.value = reduce(_state.value!!, MainMsg.SuccessMsg(pages))
         },
 
         onError = {
-            _state.value = MainState.Error(it)
+            _state.value = reduce(_state.value!!, MainMsg.ErrorMsg(it))
         })
 
-    private val _state = MutableLiveData<MainState>()
+    private val _state = MutableLiveData<MainState>(MainState.Initial)
     val state: LiveData<MainState> = _state
 
     // service is not part of bind so should not put as parameter, but we can ignore it for now
     fun bind(service: XkcdService) {
-        if (_state.value is MainState.ShowComic) {
-            _state.value = MainState.Refresh
-        } else {
-            _state.value = MainState.Filling
-        }
+        _state.value = reduce(_state.value!!, MainMsg.LoadingMsg)
 
         // next creation extract it to outside view model by using dagger
         val pageSourceFactory = PageDataSourceFactory(service, viewModelScope, fetchListener)
@@ -45,10 +40,3 @@ class MainViewModel : ViewModel() {
     }
 }
 
-sealed class MainState {
-    object Filling : MainState()
-    class ShowComic(val totalPages: Int) : MainState()
-    object Empty : MainState()
-    object Refresh : MainState()
-    class Error(val error: Throwable) : MainState()
-}
