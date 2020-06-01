@@ -40,33 +40,48 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
         resetPagesAndRefresh()
     }
 
-    private fun renderEmpty(state: MainState.Empty) {
+    private fun renderEmpty() {
+        showEmptyPlaceholder()
+        disableGoToButton()
+    }
+
+    private fun showEmptyPlaceholder() {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.VISIBLE
         comics.visibility = View.GONE
-
-        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
     private fun renderPages(state: MainState.ShowComic) {
+        showComicPages()
+        enableGoToButton(state)
+    }
+
+    private fun enableGoToButton(state: MainState.ShowComic) {
+        goToButtonHandler = PageGoToButtonHandler(this, state.totalPages, comics::scrollToPosition)
+        gotoMenu?.isEnabled = true
+    }
+
+    private fun showComicPages() {
         comics_refresher.isRefreshing = false
         manual_refresh.visibility = View.GONE
         comics.visibility = View.VISIBLE
-
-        goToButtonHandler = PageGoToButtonHandler(this, state.totalPages, comics::scrollToPosition)
-        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
-    private fun renderRefresh(state: MainState.Refresh) {
+    private fun renderRefresh() {
         comics_refresher.isRefreshing = true
-
-        gotoMenu?.isEnabled = state.gotoIsEnabled
     }
 
     private fun renderError(state: MainState.Error) {
-        Toast.makeText(this, state.error.message, Toast.LENGTH_LONG).show()
+        showError(state)
+        disableGoToButton()
+    }
 
-        gotoMenu?.isEnabled = state.gotoIsEnabled
+    private fun showError(state: MainState.Error) {
+        Toast.makeText(this, state.error.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun disableGoToButton() {
+        gotoMenu?.isEnabled = false
     }
 
     override fun onDestroy() {
@@ -82,7 +97,9 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     private var gotoMenu: MenuItem? = null
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         gotoMenu = menu?.findItem(R.id.menu_goto)
-        gotoMenu?.run { isEnabled = mainViewModel.state.value?.gotoIsEnabled ?: false }
+        gotoMenu?.run {
+            mainViewModel.state.value?.let { render(it) }
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -103,7 +120,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
     private fun render(state: MainState) {
         when (state) {
             is MainState.Empty -> {
-                renderEmpty(state)
+                renderEmpty()
             }
             is MainState.ShowComic -> {
                 renderPages(state)
@@ -112,7 +129,7 @@ class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
                 renderError(state)
             }
             is MainState.Refresh -> {
-                renderRefresh(state)
+                renderRefresh()
             }
         }
     }

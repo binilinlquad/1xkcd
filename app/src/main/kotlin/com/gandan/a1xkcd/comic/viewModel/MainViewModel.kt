@@ -45,10 +45,10 @@ class MainViewModel : ViewModel() {
     }
 }
 
-sealed class MainState(val gotoIsEnabled: Boolean) {
-    object Filling : MainState(false)
-    class ShowComic(val totalPages: Int) : MainState(true)
-    object Empty : MainState(false)
-    object Refresh : MainState(false)
-    class Error(val error: Throwable) : MainState(false)
+sealed class MainState {
+    object Filling : MainState()
+    class ShowComic(val totalPages: Int) : MainState()
+    object Empty : MainState()
+    object Refresh : MainState()
+    class Error(val error: Throwable) : MainState()
 }
