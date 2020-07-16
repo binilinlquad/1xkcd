@@ -4,6 +4,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
@@ -74,20 +75,16 @@ dependencies {
     implementation Libs.photoView
     implementation Libs.coil
 
-    // dagger
-    implementation Libs.Dagger.core
-    implementation Libs.Dagger.android
-    implementation Libs.Dagger.androidSupport
-    kapt Libs.Dagger.compiler
-    kapt Libs.Dagger.processor
-
     implementation Libs.ossLicenses
+
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.kapt
 
     //region androidTest
 
-    // to let androidTest generate dagger graph too
-    kaptAndroidTest Libs.Dagger.compiler
-    kaptAndroidTest Libs.Dagger.processor
+    // generate hilt for android test too
+    androidTestImplementation  Libs.Hilt.hiltTesting
+    kaptAndroidTest Libs.Hilt.kapt
 
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.rules
@@ -111,6 +108,10 @@ dependencies {
     testImplementation Libs.mockitoKotlin
     testImplementation Libs.OkHttp.mockWebServer
     testImplementation Libs.Coroutine.test
+
+    // For local unit tests
+    testImplementation Libs.Hilt.hiltTesting
+    kaptTest Libs.Hilt.kapt
 
     //endregion test
 

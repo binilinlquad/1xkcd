@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,14 +17,16 @@ import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.gandan.a1xkcd.ui.PageGoToButtonHandler
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
-class ComicActivity : DaggerAppCompatActivity(), CoroutineScope by MainScope() {
+@AndroidEntryPoint
+class ComicActivity :AppCompatActivity(), CoroutineScope by MainScope() {
+
     @Inject
     lateinit var service: XkcdService
 

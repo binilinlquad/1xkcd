@@ -4,23 +4,19 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import coil.Coil
 import com.gandan.a1xkcd.MOCKWEBSERVER_PORT
-import com.gandan.a1xkcd.TestApplication
 import com.gandan.a1xkcd.util.ComicDispatcher
 import com.jakewharton.espresso.OkHttp3IdlingResource
+import okhttp3.OkHttpClient
 import okio.Buffer
-import org.junit.rules.ExternalResource
 import java.io.InputStream
 
-class ComicAcceptanceTestFixture(private val rule: MockWebServerRule) : ExternalResource() {
+
+class ComicAcceptanceTestFixture(private val rule: MockWebServerRule) {
 
     val mockWebServer
         get() = rule.mockWebServer
 
-    private val testApplication
-        get() = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
-
-    private val okHttpClient
-        get() = testApplication.component.okHttpClient()
+    lateinit var okHttpClient: OkHttpClient
 
     private val okHttp3IdlingResource by lazy {
         OkHttp3IdlingResource.create("OkHttpIdlingResource", okHttpClient)
@@ -43,13 +39,11 @@ class ComicAcceptanceTestFixture(private val rule: MockWebServerRule) : External
         Coil.loader().clearMemory()
     }
 
-    override fun before() {
+    fun before() {
         setUp()
-        super.before()
     }
 
-    override fun after() {
-        super.after()
+    fun after() {
         tearDown()
     }
 

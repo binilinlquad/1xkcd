@@ -31,13 +31,13 @@ object Libs {
         }
     }
 
-    object Dagger {
-        private const val version = "2.21"
-        const val core = "com.google.dagger:dagger:$version"
-        const val android = "com.google.dagger:dagger-android:$version"
-        const val androidSupport = "com.google.dagger:dagger-android-support:$version"
-        const val compiler = "com.google.dagger:dagger-compiler:$version"
-        const val processor = "com.google.dagger:dagger-android-processor:$version"
+    object Hilt {
+        private const val version = "2.28.1-alpha"
+        private const val kaptVersion = "2.28-alpha"
+
+        const val hilt = "com.google.dagger:hilt-android:$version"
+        const val hiltTesting = "com.google.dagger:hilt-android-testing:$version"
+        const val kapt = "com.google.dagger:hilt-android-compiler:$kaptVersion"
     }
 
     const val coil = "io.coil-kt:coil:0.7.0"

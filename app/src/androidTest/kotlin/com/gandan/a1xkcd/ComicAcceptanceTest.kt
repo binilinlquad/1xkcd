@@ -1,30 +1,51 @@
 package com.gandan.a1xkcd
 
+import android.content.Context
 import android.view.View
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
+import com.gandan.a1xkcd.di.ProductionServiceModule
+import com.gandan.a1xkcd.di.ServiceModule
+import com.gandan.a1xkcd.https.TestCertificate
 import com.gandan.a1xkcd.rule.ComicAcceptanceTestFixture
 import com.gandan.a1xkcd.rule.MockWebServerRule
+import com.gandan.a1xkcd.service.XkcdService
+import com.gandan.a1xkcd.service.createXkcdService
 import com.gandan.a1xkcd.util.RecyclerViewMatcher
 import com.gandan.a1xkcd.util.WaitUntilAdapterHasItems
 import com.gandan.a1xkcd.util.waitUntilNotDisplayed
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.tls.HandshakeCertificates
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import javax.inject.Inject
 
-@RunWith(AndroidJUnit4::class)
-class ComicAcceptanceTest {
+@UninstallModules(ProductionServiceModule::class)
+@HiltAndroidTest
+open class ComicAcceptanceTest {
 
     @Rule
     @JvmField
-    val mockWebServerRule = MockWebServerRule(MOCKWEBSERVER_PORT)
+    val hiltRule = HiltAndroidRule(this)
 
     @Rule
     @JvmField
@@ -32,7 +53,24 @@ class ComicAcceptanceTest {
 
     @Rule
     @JvmField
+    val mockWebServerRule = MockWebServerRule(MOCKWEBSERVER_PORT)
+
     val testFixture = ComicAcceptanceTestFixture(mockWebServerRule)
+
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+        testFixture.okHttpClient = okHttpClient
+        testFixture.before()
+    }
+
+    @After
+    fun tearDown() {
+        testFixture.after()
+    }
 
     @Test
     fun given_opening_app_and_success_load__then_user_should_able_see_comic_page() {
@@ -125,4 +163,36 @@ class ComicAcceptanceTest {
         return RecyclerViewMatcher(R.id.comics).atPosition(pos)
     }
     //endregion
+
+    @Module
+    @InstallIn(ApplicationComponent::class)
+    object FakeServiceModule : ServiceModule {
+
+        @Provides
+        override fun webClient(@ApplicationContext context: Context): OkHttpClient {
+            val futureTask: Future<HandshakeCertificates> =
+                Executors.newSingleThreadExecutor().submit<HandshakeCertificates> {
+                    HandshakeCertificates.Builder()
+                        .addTrustedCertificate(TestCertificate.localhostCertificate.certificate)
+                        .build()
+                }
+            val clientCertificates = futureTask.get()
+
+            return OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+                .sslSocketFactory(
+                    clientCertificates.sslSocketFactory(),
+                    clientCertificates.trustManager
+                )
+                .cache(null)
+                .build()
+        }
+
+        @Provides
+        override fun service(okHttpClient: OkHttpClient): XkcdService {
+            return createXkcdService(okHttpClient, "https://localhost:$MOCKWEBSERVER_PORT")
+        }
+    }
+
+
 }

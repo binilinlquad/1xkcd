@@ -1,68 +1,40 @@
 package com.gandan.a1xkcd.di
 
-import com.gandan.a1xkcd.ComicActivity
-import com.gandan.a1xkcd.ComicApplication
+import android.content.Context
 import com.gandan.a1xkcd.service.XkcdService
 import com.gandan.a1xkcd.service.createXkcdService
-import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.android.AndroidInjectionModule
-import dagger.android.ContributesAndroidInjector
-import dagger.android.support.AndroidSupportInjectionModule
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import javax.inject.Singleton
 
-
-@Component(
-    modules = [AndroidInjectionModule::class,
-        AndroidSupportInjectionModule::class,
-        AppModule::class,
-        ActivityModule::class,
-        ProductionServiceModule::class]
-)
-
-@Singleton
-interface AppComponent {
-    fun inject(app: ComicApplication)
-}
 
 @Module
-class AppModule
+@InstallIn(ApplicationComponent::class)
+object ProductionServiceModule : ServiceModule {
 
-@Module
-interface ActivityModule {
-
-    @ActivtyScope
-    @ContributesAndroidInjector()
-    fun contributeYourActivityInjector(): ComicActivity
-}
-
-@Module
-class ProductionServiceModule(private val application: ComicApplication) : ServiceModule {
-
-    @Singleton
     @Provides
-    override fun webClient(): OkHttpClient {
+    override fun webClient(@ApplicationContext context: Context): OkHttpClient {
         val cacheSize = 10L * 1024 * 1024 // 10 MB
-        val localCache = Cache(application.cacheDir, cacheSize)
+        val localCache = Cache(context.cacheDir, cacheSize)
 
         return OkHttpClient.Builder()
             .cache(localCache)
             .build()
     }
 
-    @Singleton
     @Provides
-    override fun service(okHttpClient: dagger.Lazy<OkHttpClient>): XkcdService {
-        return createXkcdService(okHttpClient.get(), "https://xkcd.com/")
+    override fun service(okHttpClient: OkHttpClient): XkcdService {
+        return createXkcdService(okHttpClient, "https://xkcd.com/")
     }
 }
 
 interface ServiceModule {
 
-    fun webClient(): OkHttpClient
+    fun webClient(context: Context): OkHttpClient
 
-    fun service(okHttpClient: dagger.Lazy<OkHttpClient>): XkcdService
+    fun service(okHttpClient: OkHttpClient): XkcdService
 }
