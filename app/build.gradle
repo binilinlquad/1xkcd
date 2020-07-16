@@ -8,11 +8,11 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.gandan.a1xkcd"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "com.gandan.a1xkcd.TestJUnitRunner"
