@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.Coil
+import coil.ImageLoaderBuilder
 import com.gandan.a1xkcd.comic.model.MainState
 import com.gandan.a1xkcd.comic.ui.ComicPageAdapter
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
@@ -22,10 +24,14 @@ import kotlinx.android.synthetic.main.activity_comics.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ComicActivity :AppCompatActivity(), CoroutineScope by MainScope() {
+
+    @Inject
+    lateinit var okHttp3Client: OkHttpClient
 
     @Inject
     lateinit var service: XkcdService
@@ -36,6 +42,13 @@ class ComicActivity :AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Coil.setDefaultImageLoader(
+            ImageLoaderBuilder(this)
+                .okHttpClient(okHttp3Client)
+                .build()
+        )
+
         setContentView(R.layout.activity_comics)
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
