@@ -42,20 +42,25 @@ class ComicActivity :AppCompatActivity(), CoroutineScope by MainScope() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeCoil()
+        setContentView(R.layout.activity_comics)
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+    }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
+        manual_refresh.setOnClickListener { resetPagesAndRefresh() }
+
+        resetPagesAndRefresh()
+    }
+
+    private fun initializeCoil() {
         Coil.setDefaultImageLoader(
             ImageLoaderBuilder(this)
                 .okHttpClient(okHttp3Client)
                 .build()
         )
-
-        setContentView(R.layout.activity_comics)
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        comics_refresher.setOnRefreshListener { resetPagesAndRefresh() }
-        manual_refresh.setOnClickListener { resetPagesAndRefresh() }
-
-        resetPagesAndRefresh()
     }
 
     private fun renderEmpty() {
