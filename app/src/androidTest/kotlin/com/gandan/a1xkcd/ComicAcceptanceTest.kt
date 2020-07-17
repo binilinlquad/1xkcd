@@ -55,7 +55,7 @@ open class ComicAcceptanceTest {
     @JvmField
     val mockWebServerRule = MockWebServerRule(MOCKWEBSERVER_PORT)
 
-    val testFixture = ComicAcceptanceTestFixture(mockWebServerRule)
+    private val testFixture = ComicAcceptanceTestFixture(mockWebServerRule)
 
     @Inject
     lateinit var okHttpClient: OkHttpClient
