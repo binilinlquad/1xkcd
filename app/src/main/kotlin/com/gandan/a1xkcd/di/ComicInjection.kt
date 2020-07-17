@@ -10,6 +10,7 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import javax.inject.Singleton
 
 
 @Module
@@ -17,6 +18,7 @@ import okhttp3.OkHttpClient
 object ProductionServiceModule : ServiceModule {
 
     @Provides
+    @Singleton
     override fun webClient(@ApplicationContext context: Context): OkHttpClient {
         val cacheSize = 10L * 1024 * 1024 // 10 MB
         val localCache = Cache(context.cacheDir, cacheSize)
@@ -27,6 +29,7 @@ object ProductionServiceModule : ServiceModule {
     }
 
     @Provides
+    @Singleton
     override fun service(okHttpClient: OkHttpClient): XkcdService {
         return createXkcdService(okHttpClient, "https://xkcd.com/")
     }

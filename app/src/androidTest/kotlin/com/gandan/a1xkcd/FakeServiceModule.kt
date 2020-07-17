@@ -15,12 +15,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.tls.HandshakeCertificates
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object FakeServiceModule : ServiceModule {
 
     @Provides
+    @Singleton
     override fun webClient(@ApplicationContext context: Context): OkHttpClient {
         val futureTask: Future<HandshakeCertificates> =
             Executors.newSingleThreadExecutor().submit<HandshakeCertificates> {
@@ -41,6 +43,7 @@ object FakeServiceModule : ServiceModule {
     }
 
     @Provides
+    @Singleton
     override fun service(okHttpClient: OkHttpClient): XkcdService {
         return createXkcdService(okHttpClient, "https://localhost:$MOCKWEBSERVER_PORT")
     }
