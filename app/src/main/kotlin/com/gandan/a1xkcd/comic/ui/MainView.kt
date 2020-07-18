@@ -132,7 +132,7 @@ class MainView(
         Toast.makeText(root.context, state.error.message, Toast.LENGTH_LONG).show()
     }
 
-    fun clickGoTo() {
+    fun showPages() {
         goToButtonHandler.onClick()
     }
 

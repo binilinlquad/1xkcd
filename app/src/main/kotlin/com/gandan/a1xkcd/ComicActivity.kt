@@ -11,7 +11,6 @@ import coil.ImageLoaderBuilder
 import com.gandan.a1xkcd.comic.ui.MainView
 import com.gandan.a1xkcd.comic.viewModel.MainViewModel
 import com.gandan.a1xkcd.service.XkcdService
-import com.gandan.a1xkcd.ui.GoToButtonHandler
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -28,8 +27,6 @@ class ComicActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     @Inject
     lateinit var service: XkcdService
-
-    private lateinit var goToButtonHandler: GoToButtonHandler
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var mainView: MainView
@@ -75,7 +72,7 @@ class ComicActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 true
             }
             R.id.menu_goto -> {
-                mainView.clickGoTo()
+                mainView.showPages()
                 true
             }
             R.id.menu_open_source_licenses -> {
