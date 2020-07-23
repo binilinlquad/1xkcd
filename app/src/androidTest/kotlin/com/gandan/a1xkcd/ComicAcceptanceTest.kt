@@ -29,12 +29,10 @@ import javax.inject.Inject
 @HiltAndroidTest
 open class ComicAcceptanceTest {
 
-    @Rule
-    @JvmField
+    @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    @Rule
-    @JvmField
+    @get:Rule
     val mockWebServerRule = MockWebServerRule(MOCKWEBSERVER_PORT)
 
     private val testFixture = ComicAcceptanceTestFixture(mockWebServerRule)
