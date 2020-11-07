@@ -74,4 +74,35 @@ object Libs {
     const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 
     const val ossLicenses = "com.google.android.gms:play-services-oss-licenses:17.0.0"
+
+    object Compose {
+
+
+        private const val version = "1.0.0-alpha06"
+        const val core = "androidx.compose.ui:ui:$version"
+
+        // Tooling support (Previews, etc.)
+        const val toolingSupport = "androidx.ui:ui-tooling:$version"
+
+        // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+        const val foundation = "androidx.compose.foundation:foundation:$version"
+
+        // Material Design
+        const val material = "androidx.compose.material:material:$version"
+        // Material design icons
+        const val materialIconsCore = "androidx.compose.material:material-icons-core:$version"
+        const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$version"
+
+        // runtime (Composable annotation, etc)
+        const val runtime ="androidx.compose.runtime:runtime:$version"
+
+        // Integration with observables
+        const val runtimeLiveData = "androidx.compose.runtime:runtime-livedata:$version"
+        const val runtimeRxJava2 = "androidx.compose.runtime:runtime-rxjava2:$version"
+
+        // UI Tests
+        object Test {
+            const val uiTest = "androidx.ui:ui-test:$version"
+        }
+    }
 }

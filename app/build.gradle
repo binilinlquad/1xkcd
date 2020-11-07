@@ -33,6 +33,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+
     // fix issue android studio error: Default interface methods are only supported starting with Android N (--min-api 24)
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -49,6 +55,12 @@ android {
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
+
+    composeOptions {
+        kotlinCompilerVersion '1.4.0'
+        kotlinCompilerExtensionVersion Libs.Compose.version
+    }
+
 }
 
 dependencies {
@@ -81,6 +93,14 @@ dependencies {
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.kapt
 
+    implementation Libs.Compose.core
+    implementation Libs.Compose.runtime
+    implementation Libs.Compose.foundation
+    implementation Libs.Compose.material
+    implementation Libs.Compose.materialIconsCore
+    implementation Libs.Compose.materialIconsExtended
+
+    implementation Libs.Compose.toolingSupport
     //region androidTest
 
     // generate hilt for android test too
@@ -100,6 +120,8 @@ dependencies {
     implementation Libs.OkHttp.loggingInterceptor
 
     androidTestUtil Libs.AndroidX.Test.orchestrator
+
+    androidTestImplementation Libs.Compose.Test.uiTest
 
     //endregion
 
