@@ -2,18 +2,20 @@ package com.gandan.a1xkcd.buildSrc
 
 object Libs {
     object AndroidX {
-        private const val lifecycleVersion = "2.1.0"
+        private const val lifecycleVersion = "2.4.0-alpha02"
+        private const val paging_version = "3.0.0"
+        private const val constraintLayout_version = "2.0.4"
+        private const val recycleView_version = "1.2.1"
 
         const val appCompat = "androidx.appcompat:appcompat:1.1.0"
-        const val constraintLayout = "androidx.constraintlayout:constraintlayout:2.0.0-beta3"
-        const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
+        const val constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintLayout_version"
+        const val recyclerView = "androidx.recyclerview:recyclerview:$recycleView_version"
         const val cardView = "androidx.cardview:cardview:1.0.0"
-        const val pagingRuntime = "androidx.paging:paging-runtime-ktx:2.1.0"
-        const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-        const val lifecyleExtension = "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+        const val pagingRuntime = "androidx.paging:paging-runtime:$paging_version"
+        const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
         const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:$lifecycleVersion"
-        const val viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01"
-        const val lifeCycleScope = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha01"
+        const val viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+        const val lifeCycleScope = "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
 
         object Test {
             private const val version = "1.1.1"
@@ -77,12 +79,13 @@ object Libs {
 
     object Compose {
 
+        private const val kotlin_compiler = "1.5.10"
+        private const val version = "1.0.0"
 
-        private const val version = "1.0.0-alpha06"
         const val core = "androidx.compose.ui:ui:$version"
 
         // Tooling support (Previews, etc.)
-        const val toolingSupport = "androidx.ui:ui-tooling:$version"
+        const val toolingSupport = "androidx.compose.ui:ui-tooling:$version"
 
         // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
         const val foundation = "androidx.compose.foundation:foundation:$version"

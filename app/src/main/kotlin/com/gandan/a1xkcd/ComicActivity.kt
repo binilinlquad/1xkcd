@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import coil.Coil
 import coil.ImageLoaderBuilder
 import com.gandan.a1xkcd.comic.ui.MainView
@@ -35,7 +35,7 @@ class ComicActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         initializeCoil()
         setContentView(R.layout.activity_comics)
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainView = MainView(this, this.findViewById(android.R.id.content), service)
         mainView.bind(mainViewModel)
 

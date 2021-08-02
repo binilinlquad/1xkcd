@@ -57,7 +57,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion '1.4.0'
+        kotlinCompilerVersion Libs.Compose.kotlin_compiler
         kotlinCompilerExtensionVersion Libs.Compose.version
     }
 
@@ -73,7 +73,6 @@ dependencies {
     implementation Libs.AndroidX.constraintLayout
     implementation Libs.AndroidX.recyclerView
     implementation Libs.AndroidX.cardView
-    implementation Libs.AndroidX.lifecyleExtension
     kapt Libs.AndroidX.lifecycleCompiler
     implementation Libs.AndroidX.pagingRuntime
     implementation Libs.AndroidX.swipeRefreshLayout
