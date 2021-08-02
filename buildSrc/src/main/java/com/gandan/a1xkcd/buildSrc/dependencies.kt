@@ -79,8 +79,8 @@ object Libs {
 
     object Compose {
 
-        private const val kotlin_compiler = "1.5.10"
-        private const val version = "1.0.0"
+        const val kotlin_compiler = "1.5.10"
+        const val version = "1.0.0"
 
         const val core = "androidx.compose.ui:ui:$version"
 
