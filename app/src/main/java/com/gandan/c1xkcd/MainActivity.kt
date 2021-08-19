@@ -16,33 +16,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.*
 import com.gandan.c1xkcd.entity.Strip
+import com.gandan.c1xkcd.io.Env
+import com.gandan.c1xkcd.io.Runtime
 import com.gandan.c1xkcd.io.service.XkcdService
+import com.gandan.c1xkcd.io.service.retrofit
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.gandan.c1xkcd.usecase.latestStrip
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType
-import retrofit2.Retrofit
+
+val env = Env(Dispatchers.IO)
+@ExperimentalSerializationApi
+val runtime = Runtime(env, retrofit("https://www.xkcd.com").create(XkcdService::class.java))
 
 @ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
-
-    private val service: XkcdService = Retrofit.Builder()
-        .baseUrl("https://www.xkcd.com")
-        .addConverterFactory(Json {
-            ignoreUnknownKeys = true
-        }.asConverterFactory(MediaType.get("application/json")))
-        .build()
-        .create(XkcdService::class.java)
 
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
-        viewModel.service = service
         setContent {
             C1XkcdTheme {
                 Screen(viewModel)
@@ -50,36 +44,33 @@ class MainActivity : ComponentActivity() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.fetchLatest()
+            viewModel.refresh()
         }
     }
 }
 
+@ExperimentalSerializationApi
 class MainViewModel : ViewModel() {
-    var service : XkcdService? = null
     private val _latest: MutableLiveData<Strip> = MutableLiveData()
     val latest: LiveData<Strip> = _latest
 
-    suspend fun fetchLatest() {
-        val result = withContext(Dispatchers.IO) {
-            service!!.latest()
-        }
-        _latest.value = result
+    suspend fun refresh() {
+        _latest.value = runtime.latestStrip()
     }
-
-
 }
-
+@ExperimentalSerializationApi
 @Composable
 fun Screen(viewModel: MainViewModel) {
 
-    val strip = viewModel.latest.observeAsState()
-    val text by remember { strip }
+    val state = viewModel.latest.observeAsState()
+    val strip by remember { state }
 
     Scaffold(topBar = { TopAppBar() }) {
         Column {
-            text?.let {
-                Greeting(it.title)
+            strip?.let {
+                StripTitle(it.title)
+                StripAlt(it.alt)
+                StripImg(it.img)
             }
             Button(
                 onClick = { },
@@ -92,15 +83,27 @@ fun Screen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun Greeting(text: String) {
-    Text("Hi, 1xkcd lover $text!")
+fun StripTitle(text: String) {
+    Text("Title $text!")
 }
+
+@Composable
+fun StripAlt(text: String) {
+    Text("Alt $text!")
+}
+
+@Composable
+fun StripImg(text: String) {
+    Text("Img $text!")
+}
+
 
 @Composable
 fun TopAppBar() {
     androidx.compose.material.TopAppBar(title = { Text(text = "C1Xkcd") })
 }
 
+@ExperimentalSerializationApi
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
