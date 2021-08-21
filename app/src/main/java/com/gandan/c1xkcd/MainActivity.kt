@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.*
+import arrow.core.Either
 import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.io.Env
 import com.gandan.c1xkcd.io.Runtime
@@ -53,9 +54,18 @@ class MainActivity : ComponentActivity() {
 class MainViewModel : ViewModel() {
     private val _latest: MutableLiveData<Strip> = MutableLiveData()
     val latest: LiveData<Strip> = _latest
+    private val _error: MutableLiveData<Boolean> = MutableLiveData()
+    val error: LiveData<Boolean> = _error
 
     suspend fun refresh() {
-        _latest.value = runtime.latestStrip()
+        when(val result  = Either.catch { runtime.latestStrip() }) {
+            is Either.Right -> {
+                _error.value = false
+                _latest.value = result.value
+            }
+            else -> _error.value = true
+        }
+
     }
 }
 @ExperimentalSerializationApi
@@ -65,12 +75,19 @@ fun Screen(viewModel: MainViewModel) {
     val state = viewModel.latest.observeAsState()
     val strip by remember { state }
 
+    val errorState = viewModel.error.observeAsState()
+    val error by remember { errorState }
+
     Scaffold(topBar = { TopAppBar() }) {
         Column {
-            strip?.let {
-                StripTitle(it.title)
-                StripAlt(it.alt)
-                StripImg(it.img)
+            if (error == true) {
+                StripTitle("Error happened.")
+            } else {
+                strip?.let {
+                    StripTitle(it.title)
+                    StripAlt(it.alt)
+                    StripImg(it.img)
+                }
             }
             Button(
                 onClick = { },
