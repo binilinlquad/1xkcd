@@ -17,18 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.*
 import arrow.core.Either
 import com.gandan.c1xkcd.entity.Strip
-import com.gandan.c1xkcd.io.Env
-import com.gandan.c1xkcd.io.Runtime
-import com.gandan.c1xkcd.io.service.XkcdService
-import com.gandan.c1xkcd.io.service.retrofit
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import com.gandan.c1xkcd.usecase.latestStrip
-import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.ExperimentalSerializationApi
-
-val env = Env(Dispatchers.IO)
-@ExperimentalSerializationApi
-val runtime = Runtime(env, retrofit("https://www.xkcd.com").create(XkcdService::class.java))
 
 @ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
@@ -58,14 +49,13 @@ class MainViewModel : ViewModel() {
     val error: LiveData<Boolean> = _error
 
     suspend fun refresh() {
-        when(val result  = Either.catch { runtime.latestStrip() }) {
+        when(val result  = Either.catch { RUNTIME.latestStrip() }) {
             is Either.Right -> {
                 _error.value = false
                 _latest.value = result.value
             }
             else -> _error.value = true
         }
-
     }
 }
 @ExperimentalSerializationApi
