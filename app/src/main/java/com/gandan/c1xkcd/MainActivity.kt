@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.*
 import arrow.core.Either
 import com.gandan.c1xkcd.entity.Strip
-import com.gandan.c1xkcd.ui.screen.MainScreen
+import com.gandan.c1xkcd.ui.screen.Screen
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import com.gandan.c1xkcd.usecase.latestStrip
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this).get()
         setContent {
             C1XkcdTheme {
-                MainScreen(viewModel)
+                Screen(viewModel)
             }
         }
 
