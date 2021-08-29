@@ -9,6 +9,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -22,18 +23,12 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun Screen(viewModel: MainViewModel) {
     val loadingState = viewModel.loading.observeAsState()
     val loading by remember { loadingState }
-    val progressState = rememberInfiniteTransition()
-    val progress by progressState.animateFloat(
-        initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 750)
-        )
-    )
-
+    val infiniteProgress by InfiniteProgress()
 
     Scaffold(topBar = { TopAppBar() }) {
         Column {
             if (loading == true) {
-                CircularProgressIndicator(progress = progress)
+                CircularProgressIndicator(progress = infiniteProgress)
             } else {
                 ComicStrip(viewModel = viewModel)
             }
@@ -41,6 +36,15 @@ fun Screen(viewModel: MainViewModel) {
     }
 }
 
+@Composable
+fun InfiniteProgress() : State<Float> {
+    val progressState = rememberInfiniteTransition()
+    return progressState.animateFloat(
+        initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 750)
+        )
+    )
+}
 
 @Composable
 fun TopAppBar() {
