@@ -3,9 +3,11 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -47,8 +49,11 @@ class MainViewModel : ViewModel() {
     val latest: LiveData<Strip> = _latest
     private val _error: MutableLiveData<Boolean> = MutableLiveData()
     val error: LiveData<Boolean> = _error
+    private val _loading: MutableLiveData<Boolean> = MutableLiveData()
+    val loading: LiveData<Boolean> = _loading
 
     suspend fun refresh() {
+        _loading.value = true
         when(val result  = Either.catch { RUNTIME.latestStrip() }) {
             is Either.Right -> {
                 _error.value = false
@@ -56,6 +61,7 @@ class MainViewModel : ViewModel() {
             }
             else -> _error.value = true
         }
+        _loading.value = false
     }
 }
 @ExperimentalSerializationApi
@@ -68,8 +74,19 @@ fun Screen(viewModel: MainViewModel) {
     val errorState = viewModel.error.observeAsState()
     val error by remember { errorState }
 
+    val loadingState = viewModel.loading.observeAsState()
+    val loading by remember { loadingState }
+    val progressState = rememberInfiniteTransition()
+    val progress by progressState.animateFloat(initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
+        animation = tween(durationMillis = 750)
+    ))
+
+
     Scaffold(topBar = { TopAppBar() }) {
         Column {
+            if (loading == true) {
+                CircularProgressIndicator(progress = progress)
+            }
             if (error == true) {
                 StripTitle("Error happened.")
             } else {
