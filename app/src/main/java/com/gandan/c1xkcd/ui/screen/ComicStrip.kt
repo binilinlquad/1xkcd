@@ -30,7 +30,7 @@ fun ComicStrip(viewModel: MainViewModel) {
         }
     }
     Button(
-        onClick = { },
+        onClick = { viewModel._error.value = true },
         modifier = Modifier.wrapContentWidth()
     ) {
         Text(text = "Click Me!")

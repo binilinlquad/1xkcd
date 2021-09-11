@@ -35,10 +35,14 @@ class MainActivity : ComponentActivity() {
 class MainViewModel : ViewModel() {
     private val _latest: MutableLiveData<Strip> = MutableLiveData()
     val latest: LiveData<Strip> = _latest
-    private val _error: MutableLiveData<Boolean> = MutableLiveData()
+    // CH: Make it public for testing
+    val _error: MutableLiveData<Boolean> = MutableLiveData()
     val error: LiveData<Boolean> = _error
+
     private val _loading: MutableLiveData<Boolean> = MutableLiveData()
     val loading: LiveData<Boolean> = _loading
+
+
 
     suspend fun refresh() {
         _loading.value = true
