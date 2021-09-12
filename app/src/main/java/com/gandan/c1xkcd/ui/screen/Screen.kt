@@ -59,13 +59,13 @@ fun Screen(viewModel: MainViewModel) {
 
 @Composable
 fun InfiniteCircularProgressAnimation() {
-    val infiniteProgress by infiniteProgresssAnimation()
+    val infiniteProgress by infiniteProgressAnimation()
 
     CircularProgressIndicator(progress = infiniteProgress)
 }
 
 @Composable
-fun infiniteProgresssAnimation() : State<Float> {
+fun infiniteProgressAnimation() : State<Float> {
     val progressState = rememberInfiniteTransition()
     return progressState.animateFloat(
         initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
