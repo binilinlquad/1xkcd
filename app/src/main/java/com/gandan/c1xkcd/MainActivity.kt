@@ -39,7 +39,7 @@ class MainViewModel : ViewModel() {
     val _error: MutableLiveData<Boolean> = MutableLiveData()
     val error: LiveData<Boolean> = _error
 
-    private val _loading: MutableLiveData<Boolean> = MutableLiveData()
+    val _loading: MutableLiveData<Boolean> = MutableLiveData()
     val loading: LiveData<Boolean> = _loading
 
 

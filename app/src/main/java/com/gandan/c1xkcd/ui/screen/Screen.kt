@@ -12,6 +12,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
@@ -35,6 +36,20 @@ fun Screen(viewModel: MainViewModel) {
                 InfiniteCircularProgressAnimation()
             } else {
                 ComicStrip(viewModel = viewModel)
+            }
+
+            Button(
+                onClick = { viewModel._error.value = viewModel._error.value?.not() ?: true },
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                Text(text = "Toggle error snackbar!")
+            }
+
+            Button(
+                onClick = { viewModel._loading.value = viewModel._loading.value?.not() ?: true },
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                Text(text = "Toggle Loading!")
             }
         }
 
