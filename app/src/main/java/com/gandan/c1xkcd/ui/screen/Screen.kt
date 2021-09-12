@@ -5,7 +5,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -23,27 +26,19 @@ fun Screen(viewModel: MainViewModel) {
     val loading by remember { loadingState }
     val infiniteProgress by InfiniteProgress()
 
-    // Show snackbar version 2:
     val scaffoldState = rememberScaffoldState()
     ScreenGlobalMessage2(scaffoldState = scaffoldState, viewModel = viewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopAppBar() },
-// Show snackbar version 1: override snackbarhost composition function
-//        snackbarHost = {
-//            ScreenGlobalMessage(snackbarHostState = it, viewModel = viewModel)
-//        }
     ) {
-
         Column {
             if (loading == true) {
                 CircularProgressIndicator(progress = infiniteProgress)
             } else {
                 ComicStrip(viewModel = viewModel)
             }
-
-
         }
 
     }
