@@ -5,10 +5,8 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -24,7 +22,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun Screen(viewModel: MainViewModel) {
     val loadingState = viewModel.loading.observeAsState()
     val loading by remember { loadingState }
-    val infiniteProgress by InfiniteProgress()
 
     val scaffoldState = rememberScaffoldState()
     ScreenGlobalMessage2(scaffoldState = scaffoldState, viewModel = viewModel)
@@ -35,7 +32,7 @@ fun Screen(viewModel: MainViewModel) {
     ) {
         Column {
             if (loading == true) {
-                CircularProgressIndicator(progress = infiniteProgress)
+                InfiniteCircularProgressAnimation()
             } else {
                 ComicStrip(viewModel = viewModel)
             }
@@ -46,7 +43,14 @@ fun Screen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun InfiniteProgress() : State<Float> {
+fun InfiniteCircularProgressAnimation() {
+    val infiniteProgress by infiniteProgresssAnimation()
+
+    CircularProgressIndicator(progress = infiniteProgress)
+}
+
+@Composable
+fun infiniteProgresssAnimation() : State<Float> {
     val progressState = rememberInfiniteTransition()
     return progressState.animateFloat(
         initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
