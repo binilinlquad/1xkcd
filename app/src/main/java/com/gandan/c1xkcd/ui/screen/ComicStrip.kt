@@ -1,14 +1,14 @@
 package com.gandan.c1xkcd.ui.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -30,7 +30,7 @@ fun ComicStrip(viewModel: MainViewModel) {
         strip?.let {
             Title(it.title)
             AltText(it.alt)
-            ComicImage(it.img)
+            ComicImage(it.img, it.alt)
         }
     }
 }
@@ -48,7 +48,7 @@ fun AltText(text: String) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun ComicImage(url: String) {
+fun ComicImage(url: String, altText: String? = null) {
     Image(
         painter = rememberImagePainter(
             data = url,
@@ -57,7 +57,8 @@ fun ComicImage(url: String) {
                 crossfade(true)
             }
         ),
-        contentDescription = null,
-        modifier = Modifier.size(128.dp)
+        contentDescription = "Comic tell about $altText",
+        contentScale = ContentScale.FillWidth,
+        modifier = Modifier.fillMaxWidth()
     )
 }
