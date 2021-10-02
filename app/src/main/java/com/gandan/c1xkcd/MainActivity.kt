@@ -36,8 +36,8 @@ class MainViewModel : ViewModel() {
     private val _latest: MutableLiveData<Strip> = MutableLiveData()
     val latest: LiveData<Strip> = _latest
     // CH: Make it public for testing
-    val _error: MutableLiveData<Boolean> = MutableLiveData()
-    val error: LiveData<Boolean> = _error
+    val _error: MutableLiveData<Throwable?> = MutableLiveData()
+    val error: LiveData<Throwable?> = _error
 
     val _loading: MutableLiveData<Boolean> = MutableLiveData()
     val loading: LiveData<Boolean> = _loading
@@ -48,10 +48,10 @@ class MainViewModel : ViewModel() {
         _loading.value = true
         when(val result  = Either.catch { RUNTIME.latestStrip() }) {
             is Either.Right -> {
-                _error.value = false
+                _error.value = null
                 _latest.value = result.value
             }
-            else -> _error.value = true
+            is Either.Left -> _error.value = result.value
         }
         _loading.value = false
     }

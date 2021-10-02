@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import kotlinx.serialization.ExperimentalSerializationApi
+import java.lang.RuntimeException
 
 @ExperimentalSerializationApi
 @Composable
@@ -39,14 +40,22 @@ fun Screen(viewModel: MainViewModel) {
             }
 
             Button(
-                onClick = { viewModel._error.value = viewModel._error.value?.not() ?: true },
+                onClick = {
+                    viewModel._error.value = if (viewModel._error.value != null) {
+                        null
+                    } else {
+                        RuntimeException("Fake error")
+                    }
+                },
                 modifier = Modifier.wrapContentWidth()
             ) {
                 Text(text = "Toggle error snackbar!")
             }
 
             Button(
-                onClick = { viewModel._loading.value = viewModel._loading.value?.not() ?: true },
+                onClick = {
+                    viewModel._loading.value = viewModel._loading.value?.not() ?: true
+                },
                 modifier = Modifier.wrapContentWidth()
             ) {
                 Text(text = "Toggle Loading!")
@@ -65,7 +74,7 @@ fun InfiniteCircularProgressAnimation() {
 }
 
 @Composable
-fun infiniteProgressAnimation() : State<Float> {
+fun infiniteProgressAnimation(): State<Float> {
     val progressState = rememberInfiniteTransition()
     return progressState.animateFloat(
         initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(

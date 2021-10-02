@@ -19,7 +19,7 @@ fun ScreenGlobalMessage(
     val errorState = viewModel.error.observeAsState()
     val error by remember { errorState }
 
-    if (error == true) {
+    if (error != null) {
         LaunchedEffect(snackbarHostState) {
          snackbarHostState.showSnackbar("Free error app is statistically not exist", duration = SnackbarDuration.Short)
         }
@@ -35,7 +35,7 @@ fun ScreenGlobalMessage2(
     val errorState = viewModel.error.observeAsState()
     val error by remember { errorState }
 
-    if (error == true) {
+    if (error != null) {
         LaunchedEffect(scaffoldState.snackbarHostState) {
             scaffoldState.snackbarHostState.showSnackbar("Free error app is statistically not exist", duration = SnackbarDuration.Short)
         }

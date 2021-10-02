@@ -1,13 +1,10 @@
 package com.gandan.c1xkcd.ui.screen
 
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import com.gandan.c1xkcd.MainViewModel
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -20,8 +17,8 @@ fun ComicStrip(viewModel: MainViewModel) {
     val errorState = viewModel.error.observeAsState()
     val error by remember { errorState }
 
-    if (error == true) {
-        Title("Error happened.")
+    if (error != null) {
+        Title(error.toString())
     } else {
         strip?.let {
             Title(it.title)
