@@ -26,7 +26,7 @@ fun Screen(viewModel: MainViewModel) {
     val loading by remember { loadingState }
 
     val scaffoldState = rememberScaffoldState()
-    ScreenGlobalMessage2(scaffoldState = scaffoldState, viewModel = viewModel)
+    ScreenGlobalMessage(scaffoldState = scaffoldState, viewModel = viewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,

@@ -1,6 +1,8 @@
 package com.gandan.c1xkcd.ui.screen
 
-import androidx.compose.material.*
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,24 +12,6 @@ import com.gandan.c1xkcd.MainViewModel
 
 @Composable
 fun ScreenGlobalMessage(
-    snackbarHostState: SnackbarHostState,
-    viewModel: MainViewModel
-) {
-    SnackbarHost(hostState = snackbarHostState)
-
-    // composing error message
-    val errorState = viewModel.error.observeAsState()
-    val error by remember { errorState }
-
-    if (error != null) {
-        LaunchedEffect(snackbarHostState) {
-         snackbarHostState.showSnackbar("Free error app is statistically not exist", duration = SnackbarDuration.Short)
-        }
-    }
-}
-
-@Composable
-fun ScreenGlobalMessage2(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     viewModel: MainViewModel
 ) {
