@@ -9,6 +9,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -38,7 +40,7 @@ fun ComicStrip(viewModel: MainViewModel) {
 
 @Composable
 fun Title(text: String) {
-    Text("Title $text!")
+    Text(text = text, fontWeight = FontWeight.Bold, fontSize = 24.sp)
 }
 
 @Composable
