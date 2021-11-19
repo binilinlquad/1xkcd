@@ -7,22 +7,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import kotlinx.serialization.ExperimentalSerializationApi
-import java.lang.RuntimeException
 
 @ExperimentalSerializationApi
 @Composable
 fun Screen(viewModel: MainViewModel) {
-    val loadingState = viewModel.loading.observeAsState()
+    val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
     val loading by remember { loadingState }
 
     val scaffoldState = rememberScaffoldState()
@@ -33,7 +28,7 @@ fun Screen(viewModel: MainViewModel) {
         topBar = { TopAppBar() },
     ) {
         Column {
-            if (loading == true) {
+            if (loading) {
                 InfiniteCircularProgressAnimation()
             } else {
                 ComicStrip(viewModel = viewModel)
