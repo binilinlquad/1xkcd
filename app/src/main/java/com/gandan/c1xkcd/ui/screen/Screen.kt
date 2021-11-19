@@ -11,13 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
+import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun Screen(viewModel: MainViewModel) {
-    val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
+fun Screen(viewModel: MainViewModel, loadingState: State<Boolean>, content: @Composable ()->Unit) {
     val loading by remember { loadingState }
 
     val scaffoldState = rememberScaffoldState()
@@ -31,7 +31,7 @@ fun Screen(viewModel: MainViewModel) {
             if (loading) {
                 InfiniteCircularProgressAnimation()
             } else {
-                ComicStrip(viewModel = viewModel)
+                content()
             }
 
             Button(
@@ -87,7 +87,12 @@ fun TopAppBar() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val viewModel = MainViewModel()
+    val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
+    val comicStrip : State<Strip?> = viewModel.latest.collectAsState(initial = null)
+    val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+
     C1XkcdTheme {
-        Screen(MainViewModel())
+        Screen(viewModel, loadingState) { ComicStrip(comicStrip, errorState) }
     }
 }

@@ -17,11 +17,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun ComicStrip(viewModel: MainViewModel) {
-    val state : State<Strip?> = viewModel.latest.collectAsState(initial = null)
-    val strip by remember { state }
-
-    val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+fun ComicStrip(comicStrip: State<Strip?>, errorState: State<Throwable?>) {
+    val strip by remember { comicStrip }
     val error by remember { errorState }
 
     if (error != null) {

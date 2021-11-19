@@ -3,12 +3,15 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import arrow.core.Either
 import com.gandan.c1xkcd.entity.Strip
+import com.gandan.c1xkcd.ui.screen.ComicStrip
 import com.gandan.c1xkcd.ui.screen.Screen
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import com.gandan.c1xkcd.usecase.latestStrip
@@ -25,8 +28,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
         setContent {
+            val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
+            val comicStrip : State<Strip?> = viewModel.latest.collectAsState(initial = null)
+            val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+
             C1XkcdTheme {
-                Screen(viewModel)
+                Screen(viewModel, loadingState) { ComicStrip(comicStrip, errorState) }
             }
         }
 
