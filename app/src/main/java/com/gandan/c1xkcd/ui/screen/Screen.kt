@@ -6,6 +6,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,7 +29,9 @@ fun Screen(viewModel: MainViewModel, loadingState: State<Boolean>, content: @Com
         scaffoldState = scaffoldState,
         topBar = { TopAppBar() },
     ) {
-        Column {
+        Column(modifier = Modifier
+            .verticalScroll(rememberScrollState())
+        ) {
             if (loading) {
                 InfiniteCircularProgressAnimation()
             } else {

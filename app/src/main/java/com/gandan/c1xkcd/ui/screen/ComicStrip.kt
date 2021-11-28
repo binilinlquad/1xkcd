@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import coil.size.OriginalSize
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -52,10 +53,14 @@ fun ComicImage(url: String, altText: String? = null) {
             onExecute = ImagePainter.ExecuteCallback { _, _ -> true },
             builder = {
                 crossfade(true)
+                // workaround load image inside scrollable container
+                // see https://github.com/coil-kt/coil/issues/862#issuecomment-900490666
+                size(OriginalSize)
             }
         ),
         contentDescription = "Comic tell about $altText",
         contentScale = ContentScale.FillWidth,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+
     )
 }
