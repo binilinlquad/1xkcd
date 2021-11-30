@@ -12,7 +12,6 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
-import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
 import kotlinx.serialization.ExperimentalSerializationApi
 
