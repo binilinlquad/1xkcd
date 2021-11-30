@@ -4,18 +4,18 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
-import com.gandan.c1xkcd.MainViewModel
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun ScreenGlobalMessage(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    viewModel: MainViewModel
+    error: Flow<Throwable?>
 ) {
     // composing error message
-    val errorState = viewModel.error.collectAsState(initial = null)
-    val error by remember { errorState }
+    val errorState = error.collectAsState(initial = null)
+    val e by remember { errorState }
 
-    if (error != null) {
+    if (e != null) {
         LaunchedEffect(scaffoldState.snackbarHostState) {
             scaffoldState.snackbarHostState.showSnackbar("Free error app is statistically not exist", duration = SnackbarDuration.Short)
         }

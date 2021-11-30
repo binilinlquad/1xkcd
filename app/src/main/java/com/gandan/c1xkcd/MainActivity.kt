@@ -31,9 +31,10 @@ class MainActivity : ComponentActivity() {
             val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
             val comicStrip : State<Strip?> = viewModel.latest.collectAsState(initial = null)
             val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+            val errorFlow : Flow<Throwable?> = viewModel.error
 
             C1XkcdTheme {
-                Screen(viewModel, loadingState) { ComicStrip(comicStrip, errorState) }
+                Screen(errorFlow, loadingState) { ComicStrip(comicStrip, errorState) }
             }
         }
 
@@ -47,11 +48,10 @@ class MainActivity : ComponentActivity() {
 class MainViewModel : ViewModel() {
     private val _latest: MutableStateFlow<Strip?> = MutableStateFlow(null)
     val latest: Flow<Strip?> = _latest
-    // CH: Make it public for testing
-    val _error: MutableStateFlow<Throwable?> = MutableStateFlow(null)
+    private val _error: MutableStateFlow<Throwable?> = MutableStateFlow(null)
     val error: Flow<Throwable?> = _error
 
-    val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading: Flow<Boolean> = _loading
 
 
