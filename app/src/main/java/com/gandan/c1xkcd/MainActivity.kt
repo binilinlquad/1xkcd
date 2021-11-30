@@ -3,8 +3,6 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -28,13 +26,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
         setContent {
-            val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
-            val comicStrip : State<Strip?> = viewModel.latest.collectAsState(initial = null)
-            val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+            val loading : Flow<Boolean> = viewModel.loading
+            val comicStrip : Flow<Strip?> = viewModel.latest
             val errorFlow : Flow<Throwable?> = viewModel.error
 
             C1XkcdTheme {
-                Screen(errorFlow, loadingState) { ComicStrip(comicStrip, errorState) }
+                Screen(errorFlow, loading) { ComicStrip(comicStrip) }
             }
         }
 

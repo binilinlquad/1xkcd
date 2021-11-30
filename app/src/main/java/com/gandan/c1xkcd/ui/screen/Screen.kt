@@ -18,23 +18,26 @@ import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun Screen(error: Flow<Throwable?>, loadingState: State<Boolean>, content: @Composable ()->Unit) {
-    val loading by remember { loadingState }
+fun Screen(error: Flow<Throwable?>, loadingState: Flow<Boolean>, content: @Composable () -> Unit) {
+    val l = loadingState.collectAsState(initial = false)
+    val loading by remember { l }
 
     val scaffoldState = rememberScaffoldState()
 
-    ScreenGlobalMessage(scaffoldState = scaffoldState, error =  error)
+    ScreenGlobalMessage(scaffoldState = scaffoldState, error = error)
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TopAppBar() },
     ) {
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState())
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
         ) {
             if (loading) {
                 InfiniteCircularProgressAnimation()
@@ -72,11 +75,11 @@ fun TopAppBar() {
 @Composable
 fun DefaultPreview() {
     val viewModel = MainViewModel()
-    val loadingState : State<Boolean> = viewModel.loading.collectAsState(initial = false)
-    val comicStrip : State<Strip?> = viewModel.latest.collectAsState(initial = null)
-    val errorState : State<Throwable?> = viewModel.error.collectAsState(initial = null)
+    val loadingState: Flow<Boolean> = viewModel.loading
+    val error: Flow<Throwable?> = viewModel.error
+    val comicStrip : Flow<Strip?> = viewModel.latest
 
     C1XkcdTheme {
-        Screen(viewModel.error, loadingState) { ComicStrip(comicStrip, errorState) }
+        Screen(error, loadingState) { ComicStrip(comicStrip) }
     }
 }
