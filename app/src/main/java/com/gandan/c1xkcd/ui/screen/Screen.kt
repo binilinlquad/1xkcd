@@ -5,14 +5,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
@@ -35,10 +32,7 @@ fun Screen(error: Flow<Throwable?>, loadingState: Flow<Boolean>, content: @Compo
         scaffoldState = scaffoldState,
         topBar = { TopAppBar() },
     ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-        ) {
+        Column {
             if (loading) {
                 InfiniteCircularProgressAnimation()
             } else {
@@ -77,7 +71,15 @@ fun DefaultPreview() {
     val viewModel = MainViewModel()
     val loadingState: Flow<Boolean> = viewModel.loading
     val error: Flow<Throwable?> = viewModel.error
-    val comicStrip : Flow<Strip?> = viewModel.latest
+    val comicStrip: Flow<Strip?> =
+        flowOf(
+            Strip(
+                1,
+                "Look at this Awesome comic!!!",
+                "https://picsum.photos/200/300",
+                "It is so awesome!"
+            )
+        )
 
     C1XkcdTheme {
         Screen(error, loadingState) { ComicStrip(comicStrip) }
