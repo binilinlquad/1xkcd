@@ -3,7 +3,12 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -11,10 +16,7 @@ import androidx.paging.*
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.gandan.c1xkcd.entity.Strip
-import com.gandan.c1xkcd.ui.screen.AltText
-import com.gandan.c1xkcd.ui.screen.ComicImage
-import com.gandan.c1xkcd.ui.screen.Screen
-import com.gandan.c1xkcd.ui.screen.Title
+import com.gandan.c1xkcd.ui.screen.*
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import com.gandan.c1xkcd.usecase.latestStrip
 import com.gandan.c1xkcd.usecase.stripAt
@@ -53,11 +55,36 @@ class MainActivity : ComponentActivity() {
                     LazyColumn {
                         items(lazyComics, key = { it.num }, itemContent = {
                             it?.let {
-                                Title(it.title)
-                                AltText(it.alt)
-                                ComicImage(it.img, it.alt)
+                                Surface(
+                                    modifier = Modifier.wrapContentWidth(),
+                                    shape = RoundedCornerShape(2.dp),
+                                    elevation = 2.dp
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(
+                                            horizontal = 4.dp,
+                                            vertical = 8.dp
+                                        )
+                                    ) {
+                                        Title(it.title)
+                                        Spacer(modifier = Modifier.size(4.dp))
+                                        ComicImage(it.img, it.alt)
+                                        Spacer(modifier = Modifier.size(2.dp))
+                                        AltText(it.alt)
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.size(8.dp))
                             }
                         })
+                    }
+
+                    lazyComics.apply {
+                        when {
+                            loadState.refresh is LoadState.Loading -> {
+                                InfiniteCircularProgressAnimation()
+                            }
+                        }
                     }
                 }
             }
