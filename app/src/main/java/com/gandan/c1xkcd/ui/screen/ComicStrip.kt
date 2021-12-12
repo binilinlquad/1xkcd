@@ -40,7 +40,7 @@ fun Title(text: String) {
 
 @Composable
 fun AltText(text: String) {
-    Text("Alt $text!")
+    Text("$text")
 }
 
 @OptIn(ExperimentalCoilApi::class)
