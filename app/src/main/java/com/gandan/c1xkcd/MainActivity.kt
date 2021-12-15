@@ -39,14 +39,14 @@ class MainActivity : ComponentActivity() {
 
             C1XkcdTheme {
                 Screen(errorFlow, loading) {
-                    LazyColumn(reverseLayout = true) {
+                    LazyColumn {
                         items(lazyComics, key = { it.num }, itemContent = {
-                            it?.let {
-                                Surface(
-                                    modifier = Modifier.wrapContentWidth(),
-                                    shape = RoundedCornerShape(2.dp),
-                                    elevation = 2.dp
-                                ) {
+                            Surface(
+                                modifier = Modifier.wrapContentWidth(),
+                                shape = RoundedCornerShape(2.dp),
+                                elevation = 2.dp
+                            ) {
+                                it?.let {
                                     Column(
                                         modifier = Modifier.padding(
                                             horizontal = 4.dp,
@@ -59,17 +59,15 @@ class MainActivity : ComponentActivity() {
                                         Spacer(modifier = Modifier.size(2.dp))
                                         AltText(it.alt)
                                     }
-                                }
+                                } ?: InfiniteCircularProgressAnimation()
 
                                 Spacer(modifier = Modifier.size(8.dp))
                             }
                         })
-                    }
 
-                    lazyComics.apply {
-                        when {
-                            loadState.refresh is LoadState.Loading -> {
-                                InfiniteCircularProgressAnimation()
+                        lazyComics.apply {
+                            if (loadState.append is LoadState.Loading) {
+                                item { InfiniteCircularProgressAnimation() }
                             }
                         }
                     }
@@ -96,8 +94,8 @@ class ComicSource : PagingSource<Int, Strip>() {
             // swap prevKey and nextKey to mimic reverseLayout.
             LoadResult.Page(
                 data = listOf(comic),
-                prevKey = if (curPage == 1) null else curPage - 1,
-                nextKey = curPage + 1
+                prevKey = curPage + 1,
+                nextKey = if (curPage == 1) null else curPage - 1
             )
 
         } catch (e: Exception) {
@@ -115,7 +113,7 @@ class MainViewModel : ViewModel() {
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading: Flow<Boolean> = _loading
 
-    val comics: Flow<PagingData<Strip>> = Pager(PagingConfig(1)) {
+    val comics: Flow<PagingData<Strip>> = Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
         ComicSource()
     }.flow
 }
