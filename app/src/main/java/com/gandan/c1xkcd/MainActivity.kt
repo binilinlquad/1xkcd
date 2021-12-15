@@ -39,20 +39,7 @@ class MainActivity : ComponentActivity() {
 
             C1XkcdTheme {
                 Screen(errorFlow, loading) {
-                    /*
-                       we are not using reverseLayout in LazyColumn because it will start draw from from bottom to top
-                       i.e
-                      | Title   |
-                      | Comic   |
-                      | Alt Text|
-
-                      becomes
-                      | Alt Text|
-                      | Comic   |
-                      | Title   |
-                     */
-
-                    LazyColumn {
+                    LazyColumn(reverseLayout = true) {
                         items(lazyComics, key = { it.num }, itemContent = {
                             it?.let {
                                 Surface(
@@ -109,8 +96,8 @@ class ComicSource : PagingSource<Int, Strip>() {
             // swap prevKey and nextKey to mimic reverseLayout.
             LoadResult.Page(
                 data = listOf(comic),
-                prevKey = curPage + 1,
-                nextKey = if (curPage == 1) null else curPage - 1
+                prevKey = if (curPage == 1) null else curPage - 1,
+                nextKey = curPage + 1
             )
 
         } catch (e: Exception) {
