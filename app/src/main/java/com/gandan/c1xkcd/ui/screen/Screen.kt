@@ -4,12 +4,13 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
@@ -20,10 +21,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun Screen(error: Flow<Throwable?>, loadingState: Flow<Boolean>, content: @Composable () -> Unit) {
-    val l = loadingState.collectAsState(initial = false)
-    val loading by remember { l }
-
+fun Screen(error: Flow<Throwable?>, content: @Composable () -> Unit) {
     val scaffoldState = rememberScaffoldState()
 
     ScreenGlobalMessage(scaffoldState = scaffoldState, error = error)
@@ -32,13 +30,7 @@ fun Screen(error: Flow<Throwable?>, loadingState: Flow<Boolean>, content: @Compo
         scaffoldState = scaffoldState,
         topBar = { TopAppBar() },
     ) {
-        Column {
-            if (loading) {
-                InfiniteCircularProgressAnimation()
-            } else {
-                content()
-            }
-        }
+        content()
     }
 }
 
@@ -69,7 +61,6 @@ fun TopAppBar() {
 @Composable
 fun DefaultPreview() {
     val viewModel = MainViewModel()
-    val loadingState: Flow<Boolean> = viewModel.loading
     val error: Flow<Throwable?> = viewModel.error
     val comicStrip: Flow<Strip?> =
         flowOf(
@@ -82,6 +73,6 @@ fun DefaultPreview() {
         )
 
     C1XkcdTheme {
-        Screen(error, loadingState) { ComicStrip(comicStrip) }
+        Screen(error) { ComicStrip(comicStrip) }
     }
 }

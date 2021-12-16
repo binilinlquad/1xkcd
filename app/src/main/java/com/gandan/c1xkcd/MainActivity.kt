@@ -33,12 +33,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
         setContent {
-            val loading: Flow<Boolean> = viewModel.loading
             val errorFlow: Flow<Throwable?> = viewModel.error
             val lazyComics = viewModel.comics.collectAsLazyPagingItems()
 
             C1XkcdTheme {
-                Screen(errorFlow, loading) {
+                Screen(errorFlow) {
                     LazyColumn {
                         items(lazyComics, key = { it.num }, itemContent = {
                             Surface(
@@ -66,7 +65,9 @@ class MainActivity : ComponentActivity() {
                         })
 
                         lazyComics.apply {
-                            if (loadState.append is LoadState.Loading) {
+                            if (loadState.append is LoadState.Loading ||
+                                loadState.refresh is LoadState.Loading
+                            ) {
                                 item { InfiniteCircularProgressAnimation() }
                             }
                         }
@@ -109,9 +110,6 @@ class ComicSource : PagingSource<Int, Strip>() {
 class MainViewModel : ViewModel() {
     private val _error: MutableStateFlow<Throwable?> = MutableStateFlow(null)
     val error: Flow<Throwable?> = _error
-
-    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val loading: Flow<Boolean> = _loading
 
     val comics: Flow<PagingData<Strip>> = Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
         ComicSource()
