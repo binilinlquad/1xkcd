@@ -3,10 +3,7 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -38,21 +35,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
+
         setContent {
             val errorFlow: State<Throwable?> = viewModel.error.collectAsState(initial = null)
             val lazyComics = viewModel.comics.collectAsLazyPagingItems()
 
             C1XkcdTheme {
                 Screen(errorFlow) {
-                    LazyColumn {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)) {
                         items(lazyComics, key = { it.num }, itemContent = { comic ->
                             Surface(
-                                shape = RoundedCornerShape(2.dp),
-                                elevation = 2.dp
+                                shape = RoundedCornerShape(16.dp),
+                                elevation = 8.dp
                             ) {
                                 Column(
                                     modifier = Modifier.padding(
-                                        horizontal = 4.dp,
+                                        horizontal = 8.dp,
                                         vertical = 8.dp
                                     ),
                                     horizontalAlignment = Alignment.CenterHorizontally
