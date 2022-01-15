@@ -1,5 +1,6 @@
 package com.gandan.c1xkcd.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -11,17 +12,15 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.tooling.preview.Preview
-import com.gandan.c1xkcd.MainViewModel
 import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun Screen(error: Flow<Throwable?>, content: @Composable () -> Unit) {
+fun Screen(error: State<Throwable?>, content: @Composable () -> Unit) {
     val scaffoldState = rememberScaffoldState()
 
     ScreenGlobalMessage(scaffoldState = scaffoldState, error = error)
@@ -56,21 +55,20 @@ fun TopAppBar() {
     androidx.compose.material.TopAppBar(title = { Text(text = "C1Xkcd") })
 }
 
+@SuppressLint("UnrememberedMutableState")
 @ExperimentalSerializationApi
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    val viewModel = MainViewModel()
-    val error: Flow<Throwable?> = viewModel.error
-    val comicStrip: Flow<Strip?> =
-        flowOf(
+    val error: State<Throwable?> = mutableStateOf(null)
+    val comicStrip: State<Strip?> = mutableStateOf(
             Strip(
                 1,
                 "Look at this Awesome comic!!!",
                 "https://picsum.photos/200/300",
                 "It is so awesome!"
             )
-        )
+    )
 
     C1XkcdTheme {
         Screen(error) { ComicStrip(comicStrip) }

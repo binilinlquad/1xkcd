@@ -4,16 +4,14 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun ScreenGlobalMessage(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    error: Flow<Throwable?>
+    error: State<Throwable?>
 ) {
     // composing error message
-    val errorState = error.collectAsState(initial = null)
-    val e by remember { errorState }
+    val e by remember { error }
 
     if (e != null) {
         LaunchedEffect(scaffoldState.snackbarHostState) {

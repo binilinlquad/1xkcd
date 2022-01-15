@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,14 +16,12 @@ import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
 import com.gandan.c1xkcd.entity.Strip
-import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
 @Composable
-fun ComicStrip(comicStrip: Flow<Strip?>) {
-    val s = comicStrip.collectAsState(initial = null)
-    val strip by remember { s }
+fun ComicStrip(comicStrip: State<Strip?>) {
+    val strip by remember { comicStrip }
 
     strip?.let {
         Title(it.title)

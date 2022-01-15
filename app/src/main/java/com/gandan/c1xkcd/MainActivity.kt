@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -33,7 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get()
         setContent {
-            val errorFlow: Flow<Throwable?> = viewModel.error
+            val errorFlow: State<Throwable?> = viewModel.error.collectAsState(initial = null)
             val lazyComics = viewModel.comics.collectAsLazyPagingItems()
 
             C1XkcdTheme {
