@@ -41,26 +41,26 @@ class MainActivity : ComponentActivity() {
             C1XkcdTheme {
                 Screen(errorFlow) {
                     LazyColumn {
-                        items(lazyComics, key = { it.num }, itemContent = {
+                        items(lazyComics, key = { it.num }, itemContent = { comic ->
                             Surface(
                                 modifier = Modifier.wrapContentWidth(),
                                 shape = RoundedCornerShape(2.dp),
                                 elevation = 2.dp
                             ) {
-                                it?.let {
-                                    Column(
-                                        modifier = Modifier.padding(
-                                            horizontal = 4.dp,
-                                            vertical = 8.dp
-                                        )
-                                    ) {
-                                        Title(it.title)
+                                Column(
+                                    modifier = Modifier.padding(
+                                        horizontal = 4.dp,
+                                        vertical = 8.dp
+                                    )
+                                ) {
+                                    comic?.let {
+                                        Title(comic.title)
                                         Spacer(modifier = Modifier.size(4.dp))
-                                        ComicImage(it.img, it.alt)
+                                        ComicImage(comic.img, comic.alt)
                                         Spacer(modifier = Modifier.size(2.dp))
-                                        AltText(it.alt)
-                                    }
-                                } ?: InfiniteCircularProgressAnimation()
+                                        AltText(comic.alt)
+                                    } ?: InfiniteCircularProgressAnimation()
+                                }
 
                                 Spacer(modifier = Modifier.size(8.dp))
                             }
