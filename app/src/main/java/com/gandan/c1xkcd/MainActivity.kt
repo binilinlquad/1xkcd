@@ -7,14 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.paging.*
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -30,21 +26,23 @@ import kotlinx.serialization.ExperimentalSerializationApi
 @ExperimentalSerializationApi
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get()
+        val error: Flow<Throwable?> = MutableStateFlow(null)
+        val lazyComics: Flow<PagingData<Strip>> = Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
+            ComicSource()
+        }.flow
+
 
         setContent {
-            val errorFlow: State<Throwable?> = viewModel.error.collectAsState(initial = null)
-            val lazyComics = viewModel.comics.collectAsLazyPagingItems()
+            val errorState = error.collectAsState(initial = null)
+            val lazyComicsState = lazyComics.collectAsLazyPagingItems()
 
             C1XkcdTheme {
-                Screen(errorFlow) {
+                Screen(errorState) {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(8.dp)) {
-                        items(lazyComics, key = { it.num }, itemContent = { comic ->
+                        items(lazyComicsState, key = { it.num }, itemContent = { comic ->
                             Surface(
                                 shape = RoundedCornerShape(16.dp),
                                 elevation = 8.dp
@@ -69,7 +67,7 @@ class MainActivity : ComponentActivity() {
                             }
                         })
 
-                        lazyComics.apply {
+                        lazyComicsState.apply {
                             if (loadState.append is LoadState.Loading ||
                                 loadState.refresh is LoadState.Loading
                             ) {
@@ -110,12 +108,3 @@ class ComicSource : PagingSource<Int, Strip>() {
 
 }
 
-@ExperimentalSerializationApi
-class MainViewModel : ViewModel() {
-    private val _error: MutableStateFlow<Throwable?> = MutableStateFlow(null)
-    val error: Flow<Throwable?> = _error
-
-    val comics: Flow<PagingData<Strip>> = Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
-        ComicSource()
-    }.flow
-}
