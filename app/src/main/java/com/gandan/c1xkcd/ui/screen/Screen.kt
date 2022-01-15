@@ -5,14 +5,13 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
@@ -39,6 +38,16 @@ fun InfiniteCircularProgressAnimation() {
 
     CircularProgressIndicator(progress = infiniteProgress)
 }
+
+@Composable
+fun InfiniteHorizontalProgressAnimation() {
+    val infiniteProgress by infiniteProgressAnimation()
+
+    LinearProgressIndicator(
+        modifier = Modifier.fillMaxSize(),
+        progress = infiniteProgress)
+}
+
 
 @Composable
 fun infiniteProgressAnimation(): State<Float> {

@@ -3,7 +3,10 @@ package com.gandan.c1xkcd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -44,17 +47,14 @@ class MainActivity : ComponentActivity() {
                     LazyColumn {
                         items(lazyComics, key = { it.num }, itemContent = { comic ->
                             Surface(
-                                modifier = Modifier.wrapContentWidth(),
                                 shape = RoundedCornerShape(2.dp),
                                 elevation = 2.dp
                             ) {
                                 Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(
-                                            horizontal = 4.dp,
-                                            vertical = 8.dp
-                                        ),
+                                    modifier = Modifier.padding(
+                                        horizontal = 4.dp,
+                                        vertical = 8.dp
+                                    ),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     comic?.let {
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                                         ComicImage(comic.img, comic.alt)
                                         Spacer(modifier = Modifier.size(2.dp))
                                         AltText(comic.alt)
-                                    } ?: InfiniteCircularProgressAnimation()
+                                    } ?: InfiniteHorizontalProgressAnimation()
                                 }
 
                                 Spacer(modifier = Modifier.size(8.dp))
@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                             if (loadState.append is LoadState.Loading ||
                                 loadState.refresh is LoadState.Loading
                             ) {
-                                item { InfiniteCircularProgressAnimation() }
+                                item { InfiniteHorizontalProgressAnimation() }
                             }
                         }
                     }
