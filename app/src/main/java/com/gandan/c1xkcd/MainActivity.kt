@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -48,10 +49,13 @@ class MainActivity : ComponentActivity() {
                                 elevation = 2.dp
                             ) {
                                 Column(
-                                    modifier = Modifier.padding(
-                                        horizontal = 4.dp,
-                                        vertical = 8.dp
-                                    )
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(
+                                            horizontal = 4.dp,
+                                            vertical = 8.dp
+                                        ),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     comic?.let {
                                         Title(comic.title)
@@ -77,7 +81,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 }
 
