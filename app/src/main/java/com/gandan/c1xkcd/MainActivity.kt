@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                                             Title(comic.title)
                                             Spacer(modifier = Modifier.size(4.dp))
                                             ComicImage(comic.img, comic.alt)
-                                            Spacer(modifier = Modifier.size(2.dp))
+                                            Spacer(modifier = Modifier.size(8.dp))
                                             AltText(comic.alt)
                                         } ?: InfiniteHorizontalProgressAnimation()
                                     }
