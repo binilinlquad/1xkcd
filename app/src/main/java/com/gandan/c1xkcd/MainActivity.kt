@@ -29,9 +29,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val error: Flow<Throwable?> = MutableStateFlow(null)
-        val lazyComics: Flow<PagingData<Strip>> = Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
-            ComicSource()
-        }.flow
+        val lazyComics: Flow<PagingData<Strip>> =
+            Pager(PagingConfig(pageSize = 1, prefetchDistance = 1)) {
+                ComicSource()
+            }.flow
 
 
         setContent {
@@ -40,32 +41,35 @@ class MainActivity : ComponentActivity() {
 
             C1XkcdTheme {
                 Screen(errorState) {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(8.dp)) {
-                        items(lazyComicsState, key = { it.num }, itemContent = { comic ->
-                            Surface(
-                                shape = RoundedCornerShape(16.dp),
-                                elevation = 8.dp
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(
-                                        horizontal = 8.dp,
-                                        vertical = 8.dp
-                                    ),
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        items(
+                            lazyComicsState,
+                            key = { it.num },
+                            itemContent = { comic ->
+                                Surface(
+                                    shape = RoundedCornerShape(16.dp),
+                                    elevation = 8.dp
                                 ) {
-                                    comic?.let {
-                                        Title(comic.title)
-                                        Spacer(modifier = Modifier.size(4.dp))
-                                        ComicImage(comic.img, comic.alt)
-                                        Spacer(modifier = Modifier.size(2.dp))
-                                        AltText(comic.alt)
-                                    } ?: InfiniteHorizontalProgressAnimation()
+                                    Column(
+                                        modifier = Modifier.padding(
+                                            horizontal = 8.dp,
+                                            vertical = 8.dp
+                                        ),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        comic?.let {
+                                            Title(comic.title)
+                                            Spacer(modifier = Modifier.size(4.dp))
+                                            ComicImage(comic.img, comic.alt)
+                                            Spacer(modifier = Modifier.size(2.dp))
+                                            AltText(comic.alt)
+                                        } ?: InfiniteHorizontalProgressAnimation()
+                                    }
                                 }
-
-                                Spacer(modifier = Modifier.size(8.dp))
-                            }
-                        })
+                            })
 
                         lazyComicsState.apply {
                             if (loadState.append is LoadState.Loading ||
