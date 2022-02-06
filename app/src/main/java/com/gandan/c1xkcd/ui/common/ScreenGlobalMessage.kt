@@ -1,4 +1,4 @@
-package com.gandan.c1xkcd.ui.screen
+package com.gandan.c1xkcd.ui.common
 
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration

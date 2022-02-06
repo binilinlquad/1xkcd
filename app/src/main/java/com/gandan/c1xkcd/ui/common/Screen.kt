@@ -1,4 +1,4 @@
-package com.gandan.c1xkcd.ui.screen
+package com.gandan.c1xkcd.ui.common
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloat
@@ -17,7 +17,6 @@ import com.gandan.c1xkcd.entity.Strip
 import com.gandan.c1xkcd.ui.theme.C1XkcdTheme
 import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun Screen(error: State<Throwable?>, content: @Composable () -> Unit) {
     val scaffoldState = rememberScaffoldState()
