@@ -1,4 +1,4 @@
-package com.gandan.c1xkcd.ui.comic_list
+package com.gandan.c1xkcd.comic_list.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
