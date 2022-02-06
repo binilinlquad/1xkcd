@@ -6,7 +6,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 
 @Composable
-fun ScreenGlobalMessage(
+fun SnackbarErrorMessage(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     error: State<Throwable?>
 ) {

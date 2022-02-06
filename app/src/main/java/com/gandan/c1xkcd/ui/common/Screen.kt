@@ -7,10 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gandan.c1xkcd.entity.Strip
@@ -21,7 +18,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 fun Screen(error: State<Throwable?>, content: @Composable () -> Unit) {
     val scaffoldState = rememberScaffoldState()
 
-    ScreenGlobalMessage(scaffoldState = scaffoldState, error = error)
+    SnackbarErrorMessage(scaffoldState = scaffoldState, error = error)
 
     Scaffold(
         scaffoldState = scaffoldState,
