@@ -39,6 +39,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
+    namespace 'com.gandan.c1xkcd'
 }
 
 dependencies {
