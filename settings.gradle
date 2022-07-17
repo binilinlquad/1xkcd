@@ -11,12 +11,5 @@ pluginManagement {
         id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.20'
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
 rootProject.name = "C1Xkcd"
 include ':app'
